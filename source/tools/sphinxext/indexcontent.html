@@ -1,0 +1,32 @@
+{% extends "defindex.html" %}
+{% block tables %}
+  <table class="contentstable" align="center"><tr>
+    <td width="50%">
+      <div class="reference">
+        <p class="biglink"><a class="biglink" href="{{ pathto("overview/index") }}">Datamodel Overview</a><br/>
+           <span class="linkdescr">quick peak into Appbase's data model</span></p>
+      </div>
+      <div class="reference">
+        <p class="biglink"><a class="biglink" href="http://appbase.io/tutorial.html">Interactive Tutorial</a><br/>
+           <span class="linkdescr">build a live chat application in 5 mins</span></p>
+      </div>
+      <div class="reference">
+        <p class="biglink"><a class="biglink" href="{{ pathto("js/index") }}">Javascript API</a><br/>
+           <span class="linkdescr">keep this under your pillow</span></p>
+      </div>
+    </td>
+    <td width="50%">
+      <div class="reference">
+        <p class="biglink"><a class="biglink" href="{{ pathto("faq/index") }}">Quickstart Guide</a><br/>
+           <span class="linkdescr">getting started in 5 simple steps</span>
+        </p>
+      </div>
+      <div class="reference">
+        <p class="biglink"><a class="biglink" href="{{ pathto("library/index") }}">REST API</a><br/>
+           <span class="linkdescr">Write your own language reference!</span>
+        </p>
+      </div>
+    </td><td width="50%">
+    </td></tr>
+  </table>
+{% endblock %}

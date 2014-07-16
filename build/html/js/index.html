@@ -1,0 +1,826 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Appbase Javascript API &mdash; Appbase 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/appbasetheme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/sidebar.js"></script>
+    <link rel="top" title="Appbase 0.1 documentation" href="../index.html" />
+    <link rel="shortcut icon" type="image/png" href="../_static/appbase.png" />
+    <script type="text/javascript" src="../_static/copybutton.js"></script>
+    
+    
+ 
+
+  </head>
+  <body>  
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><img src="../_static/appbase.png" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        <li><a href="http://www.appbase.io/">Appbase</a> &raquo;</li>
+        <li>
+          <a href="../index.html">Appbase 0.1 documentation</a> &raquo;
+        </li>
+ 
+      </ul>
+    </div>    
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="appbase-javascript-api">
+<span id="lexical"></span><h1>Appbase Javascript API<a class="headerlink" href="#appbase-javascript-api" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="section" id="concepts">
+<h2>Concepts<a class="headerlink" href="#concepts" title="Permalink to this headline">¶</a></h2>
+<p>The Appbase data model is represented as a graph. Vertices are used for storing and retrieving primitive data, and linked to other vertices using edges.</p>
+<ul>
+<li><p class="first"><strong>Graph</strong> - The Appbase data model is represented a graph. Read more about it in the overview [here][1].</p>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Vertex</strong> - Data in Appbase is stored in vertices using the methods <cite>properties.add()</cite> and <cite>properties.commit()</cite>. Vertices are linked to other vertices using either <em>named edges</em>  or <em>ordered edges</em>.</dt>
+<dd><ul class="first last simple">
+<li><strong>Named edge</strong> - Named edge allows referencing the successor (head) vertices using distinct labels.</li>
+<li><strong>Ordered edge</strong> - Ordered edge allows referencing the successor (head) vertices using priorities.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first"><strong>Namespace</strong> - Namespaces are the containers for vertices and help with applying <em>security rules and permissions</em>.</p>
+</li>
+<li><p class="first"><strong>Path</strong> - An Appbase path is used for accessing data stored in vertices.</p>
+</li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+<div class="section" id="appbase-datatypes">
+<h2>Appbase Datatypes<a class="headerlink" href="#appbase-datatypes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="primitive">
+<h3>Primitive<a class="headerlink" href="#primitive" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Number</li>
+<li>String</li>
+</ul>
+</div>
+<div class="section" id="objects">
+<h3>Objects<a class="headerlink" href="#objects" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>Vertex Reference</li>
+<li>Vertex Snapshot</li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+</div>
+</div>
+<div class="section" id="appbase-object">
+<h2>Appbase Object<a class="headerlink" href="#appbase-object" title="Permalink to this headline">¶</a></h2>
+<p>Appbase global are the operations on the global <cite>Appbase</cite> object.</p>
+<div class="section" id="appbase-new">
+<h3><span class="function-name">Appbase.new()</span><a class="headerlink" href="#appbase-new" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Creates a new <strong>vertex</strong> under a <em>namespace</em>.</p>
+<dl class="docutils">
+<dt><strong>Returns</strong></dt>
+<dd><em>Vertex Reference</em></dd>
+<dt><strong>Usage</strong></dt>
+<dd><p class="first"><tt class="docutils literal"><span class="pre">Appbase.new(namespace,[key],callback)</span></tt></p>
+<div class="last line-block">
+<div class="line"><strong>namespace</strong> <tt class="docutils literal"><span class="pre">String</span></tt> Namespace key</div>
+<div class="line"><strong>key</strong> <em>(optional)</em> <tt class="docutils literal"><span class="pre">String</span></tt> Key given to the new vertex</div>
+<div class="line"><strong>callback</strong> <tt class="docutils literal"><span class="pre">Function</span></tt> passed with the argument <em>error</em></div>
+</div>
+</dd>
+</dl>
+<p>The <em>namespace</em> is automatically created if it does not already exist.</p>
+<p>A unique <em>key</em> can be given to the vertex. Otherwise, a unique key will be generated automatically. The key should not contain any whitespace and &#8216;/&#8217; character.</p>
+<p><strong>Example</strong></p>
+<div class="highlight-js"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">abRef</span> <span class="o">=</span> <span class="nx">Appbase</span><span class="p">.</span><span class="k">new</span><span class="p">(</span><span class="s1">&#39;prisoner&#39;</span><span class="p">,</span> <span class="s1">&#39;andy_dufresne&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">error</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Vertex created.&#39;</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;The vertex already exists.&#39;</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">);</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>### Appbase.ref()
+An <em>Appbase reference</em> allows operating on a vertex stored in <em>Appbase</em> at some path. This method creates a reference pointing to a path.</p>
+<p>#### Usage
+<tt class="docutils literal"><span class="pre">`javascript</span>
+<span class="pre">Appbase.ref(path)</span>
+<span class="pre">`</span></tt></p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>path</strong> <cite>String</cite> - path to the vertex in Appbase</li>
+</ul>
+</div></blockquote>
+<p>A <em>Path</em> in Appbase consists of one or more linked vertices with the endpoint always being a vertex. &#8216;/&#8217; is used to demarcate between consequent vertices. The <em>base-url</em> is a unique string for the Application, and the first element after the url represents a namespace, and following elements are objects.</p>
+<p>#### Returns
+<cite>Appbase Reference</cite> - pointing to the vertex located at the given path.</p>
+<p>#### Example
+<tt class="docutils literal"><span class="pre">`javascript</span>
+<span class="pre">var</span> <span class="pre">abRef</span> <span class="pre">=</span> <span class="pre">Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer');</span>
+<span class="pre">`</span></tt></p>
+<p>The <em>path</em>, &#8216;<a class="reference external" href="https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer">https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer</a>&#8216; points to a <em>vertex</em>, which is inserted as the <strong>edgename : &#8216;rock*hammer&#8217;</strong> in the <em>vertex</em> of the <strong>namespace : &#8216;prisoner&#8217;</strong> with <strong>key : andy*dufresne</strong>. The application&#8217;s <em>base url</em> is <strong>https://shawshank.api.appbase.io</strong>.</p>
+<p>## Appbase Reference
+Operations, such as read/write on vertex, located at a path can be done using an <cite>Appbase Reference</cite>.</p>
+<p>### path()
+To know what path this reference points to.</p>
+<p>#### Usage
+<tt class="docutils literal"><span class="pre">`javascript</span>
+<span class="pre">abRef.path()</span>
+<span class="pre">`</span></tt></p>
+<p>#### Returns
+<cite>String</cite> - The path</p>
+<p>### properties.add()
+Add a property into the vertex and give it a value, or set a value for an existing property.</p>
+<p>#### Usage
+<tt class="docutils literal"><span class="pre">`javascript</span>
+<span class="pre">abRef.properties.add(prop,val,[callback])</span>
+<span class="pre">`</span></tt></p>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>prop</strong> <cite>String</cite> - property name</p>
+</li>
+<li><p class="first"><strong>value</strong> <cite>String/Number</cite> - value</p>
+</li>
+<li><dl class="first docutils">
+<dt><strong>callback</strong> <cite>Function</cite> - will be passed these as arguments:</dt>
+<dd><ul class="first last simple">
+<li><strong>error</strong> <cite>Boolean/String</cite></li>
+<li><strong>abRef</strong> <cite>Appbase Reference</cite> - points to the same path on which the method is called</li>
+<li><strong>snapObj</strong> <cite>Vertex Snapshot</cite> - Snapshot of the new data stored in the vertex.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>#### Returns
+<cite>Appbase Reference</cite> - pointing to the same path where the method is called. This allows chaining of methods.</p>
+<p>### properties.commit()
+A strongly consistent <em>set</em> operation. It allows you create consistent aggregators, such as counters.</p>
+<p>#### Usage
+<tt class="docutils literal"><span class="pre">`javascript</span>
+<span class="pre">abRef.properties.commit(property,</span> <span class="pre">apply,</span> <span class="pre">[callback])</span>
+<span class="pre">`</span></tt></p>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>property</strong> <cite>String</cite></p>
+</li>
+<li><p class="first"><strong>apply</strong> <cite>function</cite> - The function should return which returns String/Number. The old value is passed in as an argument to the function</p>
+</li>
+<li><dl class="first docutils">
+<dt><strong>callback</strong> <cite>Function</cite> - will be passed these as arguments:</dt>
+<dd><ul class="first last simple">
+<li><strong>error</strong> <cite>Boolean/String</cite></li>
+<li><strong>abRef</strong> <cite>Appbase Reference</cite> - points to the same path on which the method is called</li>
+<li><strong>snapObj</strong> <cite>Vertex Snapshot</cite> - - Snapshot of the new data stored in the vertex.</li>
+<li><strong>isCommitted</strong> <cite>Boolean</cite> - Whether the final value is committed or is still the new data returned from the server</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>#### Returns
+<cite>Appbase Reference</cite> - pointing to the same path where the method is called. This allows chaining of methods.</p>
+<p>#### Example
+<a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>javascript
+var toolRef = Appbase.ref(&#8216;<a class="reference external" href="https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer">https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer</a>&#8216;);</p>
+<dl class="docutils">
+<dt>toolRef.properties.commit(&#8216;size&#8217;,function(prevSize) {</dt>
+<dd>return prevSize + 1;</dd>
+</dl>
+<p>});</p>
+<dl class="docutils">
+<dt>/* The size of Dufresne&#8217;s rock hammer can be increased</dt>
+<dd><ul class="first simple">
+<li>consistently (no changes will be lost). If 3 people</li>
+<li>the size by 1 each simultaneously, the size will</li>
+<li>increase by 3.</li>
+</ul>
+<p class="last"><a href="#id5"><span class="problematic" id="id6">*</span></a>/</p>
+</dd>
+</dl>
+<p><a href="#id7"><span class="problematic" id="id8">``</span></a><a href="#id9"><span class="problematic" id="id10">`</span></a></p>
+<p>### properties.remove()
+Removes a property.</p>
+<p>#### Usage
+<tt class="docutils literal"><span class="pre">`javascript</span>
+<span class="pre">abRef.properties.remove(prop,[callback])</span>
+<span class="pre">`</span></tt></p>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>prop</strong> <cite>String</cite> - property name</p>
+</li>
+<li><dl class="first docutils">
+<dt><strong>callback</strong> <cite>Function</cite> - will be passed these as arguments:</dt>
+<dd><ul class="first last simple">
+<li><strong>error</strong> <cite>Boolean/String</cite></li>
+<li><strong>abRef</strong> <cite>Appbase Reference</cite> - points to the same path on which the method is called</li>
+<li><strong>snapObj</strong> <cite>Vertex Snapshot</cite> - - Snapshot of the new data stored in the vertex.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>#### Returns
+<cite>Appbase Reference</cite> - pointing to the same path where the method is called. This allows chaining of methods.</p>
+<p>### named*edges.add()
+Sets/inserts a unidirectional edge to another vertex. This operation also creates a new accessible path, which can be used to create an <cite>Appbase Reference</cite>.</p>
+<p>#### Usage
+<tt class="docutils literal"><span class="pre">`javascript</span>
+<span class="pre">abRef.named*edges.add(abRef,</span> <span class="pre">edgename,</span> <span class="pre">[callback])</span>
+<span class="pre">`</span></tt></p>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>edgename</strong> <cite>String</cite></p>
+</li>
+<li><p class="first"><strong>abRef</strong> <cite>Appbase Reference</cite> - The vertex where the edge would point</p>
+</li>
+<li><dl class="first docutils">
+<dt><strong>callback</strong> <cite>Function</cite> - will be passed these as arguments:</dt>
+<dd><ul class="first last simple">
+<li><strong>error</strong> <cite>Boolean/String</cite></li>
+<li><strong>abRef</strong> <cite>Appbase Reference</cite> - points to the same path on which the method is called</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>Fo named edges, if some edge exists and points to a vertex, and now its passed as <cite>edgename</cite> with an <cite>Appbase Reference</cite> of some other vertex, the edge will be <em>replaced</em>. It is considered to be <em>removed</em> and <em>added</em> again, therefore, <strong>edge*removed</strong> event will be fired, followed by <strong>edge*added</strong> for the same edge. Take a look at the documentation of <cite>abRef.on()</cite> for more details on the events.</p>
+<p>#### Returns
+<cite>Appbase Reference</cite> - pointing to the same path where the method is called. This allows chaining of methods.</p>
+<p>#### Example
+<a href="#id11"><span class="problematic" id="id12">``</span></a><a href="#id13"><span class="problematic" id="id14">`</span></a>javascript
+var prisonerRef = Appbase.ref(&#8216;<a class="reference external" href="https://shawshank.api.appbase.io/prisoner/andy*dufresne">https://shawshank.api.appbase.io/prisoner/andy*dufresne</a>&#8216;);
+var toolRef = Appbase.new(&#8216;tool&#8217;); // new vertex of the namespace &#8216;tool&#8217;</p>
+<p>toolRef.properties.add(&#8216;size&#8217;,12);
+prisonerRef.named*edges.add(&#8216;rock*hammer&#8217;,toolRef);</p>
+<dl class="docutils">
+<dt>/* Now Dufresne&#8217;s rock hammer can be accessed directly with</dt>
+<dd><ul class="first simple">
+<li>the path: &#8216;<a class="reference external" href="https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer">https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer</a>&#8216;</li>
+</ul>
+<p class="last"><a href="#id15"><span class="problematic" id="id16">*</span></a>/</p>
+</dd>
+</dl>
+<p><a href="#id17"><span class="problematic" id="id18">``</span></a><a href="#id19"><span class="problematic" id="id20">`</span></a></p>
+<p>### ordered*edges.add()
+Sets/inserts a unidirectional edge to another vertex. This operation also creates a new accessible path, which can be used to create an <cite>Appbase Reference</cite>.</p>
+<p>#### Usage
+<tt class="docutils literal"><span class="pre">`javascript</span>
+<span class="pre">abRef.edges.add(abRef,</span> <span class="pre">[priority],</span> <span class="pre">[callback])</span>
+<span class="pre">`</span></tt></p>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>abRef</strong> <cite>Appbase Reference</cite> - The vertex where the edge would point</p>
+</li>
+<li><p class="first"><strong>priority</strong> <em>(optional)</em> <cite>Number</cite> - A natural number, negative, positive or zero. If no priority is given, server timestamp will given as the priority, allowing you to fetch the edges in the same order as they were added</p>
+</li>
+<li><dl class="first docutils">
+<dt><strong>callback</strong> <cite>Function</cite> - will be passed these as arguments:</dt>
+<dd><ul class="first last simple">
+<li><strong>error</strong> <cite>Boolean/String</cite></li>
+<li><strong>abRef</strong> <cite>Appbase Reference</cite> - points to the same path on which the method is called</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>If <cite>abRef</cite> for an existing ordered edge is passed with a different priority, the edge  is moved to that index, and all the following edges are  considered moved, too. <strong>edge*moved</strong> event will be fired on all of them.</p>
+<p>#### Returns
+<cite>Appbase Reference</cite> - pointing to the same path where the method is called. This allows chaining of methods.</p>
+<p>### named*edges.remove()
+Removes a edge.</p>
+<p>#### Usage
+<tt class="docutils literal"><span class="pre">`javascript</span>
+<span class="pre">abRef.named*edges.remove(edgename,[callback])</span>
+<span class="pre">`</span></tt></p>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>edgename</strong> <cite>String</cite> - for named edges</p>
+</li>
+<li><dl class="first docutils">
+<dt><strong>callback</strong> <cite>Function</cite> - will be passed these as arguments:</dt>
+<dd><ul class="first last simple">
+<li><strong>error</strong> <cite>Boolean/String</cite></li>
+<li><strong>abRef</strong> <cite>Appbase Reference</cite> - points to the same path on which the method is called</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>#### Returns
+<cite>Appbase Reference</cite> - pointing to the same path where the method is called. This allows chaining of methods.</p>
+<p>### ordered*edges.remove()
+Removes a edge.</p>
+<p>#### Usage
+<tt class="docutils literal"><span class="pre">`javascript</span>
+<span class="pre">abRef.ordered*edges.remove(abRef,[callback])</span>
+<span class="pre">`</span></tt></p>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>abRef</strong> <cite>Appbase Reference</cite> - reference to the ordered edge</p>
+</li>
+<li><dl class="first docutils">
+<dt><strong>callback</strong> <cite>Function</cite> - will be passed these as arguments:</dt>
+<dd><ul class="first last simple">
+<li><strong>error</strong> <cite>Boolean/String</cite></li>
+<li><strong>abRef</strong> <cite>Appbase Reference</cite> - points to the same path on which the method is called</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>#### Returns
+<cite>Appbase Reference</cite> - pointing to the same path where the method is called. This allows chaining of methods.</p>
+<p>### destroy()
+Delete the vertex from <em>Appbase</em>, edges to this vertex in other vertexes will be removed as well. The appbase reference now turns invalid and listeners won&#8217;t fire. Any data modification operation will fail.</p>
+<p>#### Usage
+<tt class="docutils literal"><span class="pre">`javascript</span>
+<span class="pre">abRef.destroy([callback])</span>
+<span class="pre">`</span></tt>
+- <strong>callback</strong> <cite>Function</cite> - will be passed these as arguments:</p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>error</strong> <cite>Boolean/String</cite></li>
+</ul>
+</div></blockquote>
+<p>### on(&#8216;properties&#8217;)</p>
+<p>Reading of data from <em>Appbase</em> happens through listening to events on <em>Appbase References</em>. This event listens to changes in the properties at a path.</p>
+<p>It immediately fires the event with existing properties, when listening for the first time, then fires again whenever the properties are changed.</p>
+<p>#### Usage
+<tt class="docutils literal"><span class="pre">`javascript</span>
+<span class="pre">abRef.on('properties',[listenerName],callback)</span>
+<span class="pre">`</span></tt></p>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>listenerName</strong> <em>(Optional)</em> <cite>String</cite> - Name given to the listener.</p>
+</li>
+<li><dl class="first docutils">
+<dt><strong>callback</strong> <cite>Function</cite> - will be passed these as arguments:</dt>
+<dd><ul class="first last simple">
+<li><strong>error</strong> <cite>Boolean/String</cite></li>
+<li><strong>abRef</strong> <cite>Appbase Reference</cite> - points to the path on which the event is fired</li>
+<li><strong>snapObj</strong> <cite>Vertex Snapshot</cite> - Snapshot of the data stored in the vertex. Take a look at the documentation of <cite>Vertex Snapshot</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p><cite>listenerName</cite> is a unique string, which can be used later on to turn this listener off using <cite>offWithName(listenerName)</cite>. This is a way to keep track of listeners. If a <cite>listenerName</cite> is given again with a different callback function, the old callback function is replaced, and will no longer be called when the event is fired, instead the new function will be called. If no <cite>listenerName</cite> is given, a unique string will be generated as the listener&#8217;s name and returned.</p>
+<p>#### Returns
+<cite>String</cite> - the listener&#8217;s name and can be used to turn the listener off.</p>
+<p>#### Example
+<a href="#id21"><span class="problematic" id="id22">``</span></a><a href="#id23"><span class="problematic" id="id24">`</span></a>javascript
+TODO: change according to the method signature
+var toolRef = Appbase.ref(&#8216;<a class="reference external" href="https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer">https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer</a>&#8216;);
+// Existing data : {size:12}</p>
+<dl class="docutils">
+<dt>toolRef.on(&#8216;properties&#8217;,function(err,ref,snap){</dt>
+<dd>console.log(snap.properties().size);</dd>
+</dl>
+<p>);</p>
+<dl class="docutils">
+<dt>setTimeout(function(){</dt>
+<dd>toolRef.properties.add(&#8216;size&#8217;,13);</dd>
+</dl>
+<p>},2000);</p>
+<dl class="docutils">
+<dt>/* It would immediately log &#8216;12&#8217; - the existing properties.</dt>
+<dd><ul class="first simple">
+<li>After 2 secs, It would log &#8216;13&#8217;.</li>
+</ul>
+<p class="last"><a href="#id25"><span class="problematic" id="id26">*</span></a>/</p>
+</dd>
+</dl>
+<p><a href="#id27"><span class="problematic" id="id28">``</span></a><a href="#id29"><span class="problematic" id="id30">`</span></a></p>
+<p>### on(&#8216;edge*added&#8217;)
+Get existing edges inserted at a location, and listen to new ones.</p>
+<p>#### Usage
+<tt class="docutils literal"><span class="pre">`javascript</span>
+<span class="pre">abRef.on('edge*added',edgetype,[listenerName],[options],callback)</span>
+<span class="pre">`</span></tt></p>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>edgetype</strong> <cite>String</cite> - &#8216;ordered&#8217; or &#8216;named&#8217;</p>
+</li>
+<li><p class="first"><strong>listenerName</strong> <em>(Optional)</em> <cite>String</cite> - Name given to the listener. For details, take a look at the documentation of <cite>on(&#8216;properties&#8217;)</cite></p>
+</li>
+<li><dl class="first docutils">
+<dt><strong>options</strong> <cite>Object</cite></dt>
+<dd><ul class="first last simple">
+<li><strong>limit</strong> How many existing edges to fetch - only for ordered edges</li>
+<li><strong>startAt</strong> <cite>Number</cite> - Priority to start with - only for ordered edges</li>
+<li><strong>endAt</strong> <cite>Number</cite> - Priority to end with - only for ordered edges</li>
+<li><strong>skip</strong>  <cite>Number</cite> - Skip initial edges - only for ordered edges</li>
+<li><strong>noData</strong> <cite>Boolean</cite> - Whether to include the data stored at the vertex where the edge points</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>callback</strong> <cite>Function</cite> - will be passed these as arguments:</dt>
+<dd><ul class="first last simple">
+<li><strong>error</strong> <cite>Boolean/String</cite></li>
+<li><strong>abRef</strong> <cite>Appbase Reference</cite> - pointing to path of the edge</li>
+<li><strong>[snapObj]</strong> <cite>Vertex Snapshot</cite> - Snapshot of the data stored in the vertex, where the edge points. Take a look at the documentation of <cite>Vertex Snapshot</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p><cite>snapObj</cite> will not be passed if <cite>{noData: true}</cite> is passed as the options to the listener.</p>
+<p><cite>startAt</cite> and <cite>limit</cite> are only effective for retrieving the existing properties. New edges will be returned regardless of their index.</p>
+<p>#### Returns
+<cite>String</cite> - the listener&#8217;s name and can be used to turn the listener off.</p>
+<p>#### Example
+<a href="#id31"><span class="problematic" id="id32">``</span></a><a href="#id33"><span class="problematic" id="id34">`</span></a>javascript
+TODO: change according to the method signature
+var redRef = Appbase.new(&#8216;prisoner&#8217;,&#8217;ellis*boyd*red&#8217;); // New prisoner
+redRef.properties.add(&#8216;firstname&#8217;,&#8217;Ellis Boyd&#8217;);
+redRef.properties.add(&#8216;lastname&#8217;,&#8217;Redding&#8217;);
+redRef.properties.add(&#8216;nick&#8217;,&#8217;Red&#8217;);</p>
+<p>var andyRef = Appbase.ref(&#8216;<a class="reference external" href="https://shawshank.api.appbase.io/prisoner/andy*dufresne">https://shawshank.api.appbase.io/prisoner/andy*dufresne</a>&#8216;);</p>
+<dl class="docutils">
+<dt>andyRef.on(&#8216;edge*added&#8217;,function(edgeSnap){</dt>
+<dd>console.log(&#8216;Name:&#8217;, edgeSnap.val().nick);</dd>
+</dl>
+<p>});</p>
+<p>andyRef.edges.add(&#8216;best*friend&#8217;,redRef);</p>
+<dl class="docutils">
+<dt>/* stdout</dt>
+<dd><ul class="first">
+<li><p class="first"><a href="#id35"><span class="problematic" id="id36">|</span></a>&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;</p>
+</li>
+<li><div class="first line-block">
+<div class="line">Name: Red</div>
+</div>
+</li>
+<li><p class="first"><a href="#id37"><span class="problematic" id="id38">|</span></a>&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;</p>
+</li>
+</ul>
+<p class="last"><a href="#id39"><span class="problematic" id="id40">*</span></a>/</p>
+</dd>
+</dl>
+<p><a href="#id41"><span class="problematic" id="id42">``</span></a><a href="#id43"><span class="problematic" id="id44">`</span></a></p>
+<p>### on(&#8216;edge*removed&#8217;)
+Listen to removal of edges.</p>
+<p>#### Usage
+<tt class="docutils literal"><span class="pre">`javascript</span>
+<span class="pre">abRef.on('edge*removed',edgetype,[listenerName],callback)</span>
+<span class="pre">`</span></tt></p>
+<blockquote>
+<div><ul>
+<li><ul class="first simple">
+<li><strong>edgetype</strong> <cite>String</cite> - &#8216;ordered&#8217; or &#8216;named&#8217;</li>
+</ul>
+</li>
+<li><p class="first"><strong>listenerName</strong> <em>(Optional)</em> <cite>String</cite> - Name given to the listener. For details, take a look at the documentation of <cite>on(&#8216;properties&#8217;)</cite>.</p>
+</li>
+<li><dl class="first docutils">
+<dt><strong>callback</strong> <cite>Function</cite> - will be passed these as arguments:</dt>
+<dd><ul class="first last simple">
+<li><strong>error</strong> <cite>Boolean/String</cite></li>
+<li><strong>abRef</strong> <cite>Appbase Reference</cite> - pointing to path of the edge</li>
+<li><strong>snapObj</strong> <cite>Vertex Snapshot</cite> - Snapshot of the data stored in the vertex, where the edge used to point. Take a look at the documentation of <cite>Vertex Snapshot</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>#### Returns
+<cite>String</cite> - the listener&#8217;s name and can be used to turn the listener off.</p>
+<p>###  on(&#8216;edge*changed&#8217;)
+If the properties of the vertex, pointed by an existing edge is changed, this event is fired.</p>
+<p>#### Usage
+<tt class="docutils literal"><span class="pre">`javascript</span>
+<span class="pre">abRef.on('edge*changed',edgetype,[listenerName],callback)</span>
+<span class="pre">`</span></tt></p>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>edgetype</strong> <cite>String</cite> - &#8216;ordered&#8217; or &#8216;named&#8217;</p>
+</li>
+<li><p class="first"><strong>listenerName</strong> <em>(Optional)</em> <cite>String</cite> - Name given to the listener. For details, take a look at the documentation of <cite>on(&#8216;properties&#8217;)</cite>.</p>
+</li>
+<li><dl class="first docutils">
+<dt><strong>callback</strong> <cite>Function</cite> - will be passed these as arguments:</dt>
+<dd><ul class="first last simple">
+<li><strong>error</strong> <cite>Boolean/String</cite></li>
+<li><strong>abRef</strong> <cite>Appbase Reference</cite> - pointing to path of the edge</li>
+<li><strong>snapObj</strong> <cite>Vertex Snapshot</cite> - Snapshot of the data stored in the vertex, where the edge points. Take a look at the documentation of <cite>Vertex Snapshot</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>For this event to fire, in the background the vertexes pointed by all the edges are listened for <strong>properties</strong> event, and this would be a costly operation in terms of bandwidth if there are a huge number of edges.</p>
+<p>#### Returns
+<cite>String</cite> - the listener&#8217;s name and can be used to turn the listener off.</p>
+<p>#### Example
+<a href="#id45"><span class="problematic" id="id46">``</span></a><a href="#id47"><span class="problematic" id="id48">`</span></a>javascript
+TODO: change according to the method signature
+var andy = Appbase.ref(&#8216;<a class="reference external" href="https://shawshank.api.appbase.io/prisoner/andy*dufresne">https://shawshank.api.appbase.io/prisoner/andy*dufresne</a>&#8216;);</p>
+<p>var toolRef = Appbase.ref(&#8216;<a class="reference external" href="https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer">https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer</a>&#8216;);
+// Existing data at this location: {size:12}</p>
+<dl class="docutils">
+<dt>andy.on(&#8216;edge*changed&#8217;,function(snapshot){</dt>
+<dd><dl class="first docutils">
+<dt>for (var prop in snapshot.properties()) {</dt>
+<dd>console.log(prop,&#8217;:&#8217;,snapshot.properties()[prop]);</dd>
+</dl>
+<p class="last">}</p>
+</dd>
+</dl>
+<p>})</p>
+<p>toolRef.properties.add(&#8216;usage&#8217;,&#8217;prison break&#8217;);</p>
+<dl class="docutils">
+<dt>/* stdout</dt>
+<dd><ul class="first">
+<li><p class="first"><a href="#id49"><span class="problematic" id="id50">|</span></a>&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;</p>
+</li>
+<li><div class="first line-block">
+<div class="line">size : 12</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">usage : prison break</div>
+</div>
+</li>
+<li><p class="first"><a href="#id51"><span class="problematic" id="id52">|</span></a>&#8212;&#8212;&#8212;&#8212;&#8212;&#8211;</p>
+</li>
+</ul>
+<p class="last"><a href="#id53"><span class="problematic" id="id54">*</span></a>/</p>
+</dd>
+</dl>
+<p><a href="#id55"><span class="problematic" id="id56">``</span></a><a href="#id57"><span class="problematic" id="id58">`</span></a></p>
+<p>###  on(&#8216;edge*moved&#8217;)
+TODO: only on ordered edges
+This event is fired, when the order of an edge is changed.</p>
+<p>When the order of an edge is manually changed by calling <cite>abRef.edges.add()</cite> on an existing edge, also the other edges are moved, either they are shifted upward or downward by &#8216;1&#8217; in the order. This event is fired for all the edges, moved manually or automatically.</p>
+<p>#### Usage
+<tt class="docutils literal"><span class="pre">`javascript</span>
+<span class="pre">abRef.on('edge*moved',[listenerName],callback)</span>
+<span class="pre">`</span></tt></p>
+<blockquote>
+<div><ul>
+<li><p class="first"><strong>listenerName</strong> <em>(Optional)</em> <cite>String</cite> - Name given to the listener. For details, take a look at the documentation of <cite>on(&#8216;properties&#8217;)</cite>.</p>
+</li>
+<li><p class="first"><strong>listenDepth</strong> <cite>Number</cite> - The depth of edges up to which listen for data changes. Default value is <cite>0</cite>, meaning no listening on the properties.</p>
+</li>
+<li><dl class="first docutils">
+<dt><strong>callback</strong> <cite>Function</cite> - will be passed these as arguments:</dt>
+<dd><ul class="first last simple">
+<li><strong>error</strong> <cite>Boolean/String</cite></li>
+<li><strong>abRef</strong> <cite>Appbase Reference</cite> - pointing to path of the edge</li>
+<li><strong>snapObj</strong> <cite>Vertex Snapshot</cite> - Snapshot of the data stored in the vertex, where the edge points. Take a look at the documentation of <cite>Vertex Snapshot</cite></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p>#### Returns
+<cite>String</cite> - the listener&#8217;s name and can be used to turn the listener off.</p>
+<p>### off()
+Turn off the listeners on an event.</p>
+<p>#### Usage
+<tt class="docutils literal"><span class="pre">`javascript</span>
+<span class="pre">abRef.off([event])</span>
+<span class="pre">`</span></tt></p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>event</strong> <em>(optional)</em> <cite>String</cite> - All the listeners on this event, will be turned off. If no event is given, all the listeners on all the events will be turned off.</li>
+</ul>
+</div></blockquote>
+<p>#### Returns
+<cite>Array</cite> - containing listeners&#8217; names, which have been turned off.</p>
+<p>### offWithName()
+Turn off a listener by its name.</p>
+<p>#### Usage
+<tt class="docutils literal"><span class="pre">`javascript</span>
+<span class="pre">offWithName(listenerName)</span>
+<span class="pre">`</span></tt></p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>listenerName</strong> <cite>String</cite> - The unique name given to the listener while calling <cite>on(event)</cite>.</li>
+</ul>
+</div></blockquote>
+<p>### out()
+TODO: text
+Get an <em>Appbase Reference</em> pointing to a edge of the current vertex. This is just string manipulation on the path, and the reference will be returned even if the edge doesn&#8217;t exist, but read/write operations will fail.</p>
+<p>#### Usage
+<tt class="docutils literal"><span class="pre">`javascript</span>
+<span class="pre">abRef.out(edgename)</span>
+<span class="pre">`</span></tt></p>
+<p>#### Returns
+<cite>Appbase Reference</cite></p>
+<p>#### Example
+<a href="#id59"><span class="problematic" id="id60">``</span></a><a href="#id61"><span class="problematic" id="id62">`</span></a>javascript
+var prisonerRef = Appbase.ref(&#8216;<a class="reference external" href="https://shawshank.api.appbase.io/prisoner/andy*dufresne">https://shawshank.api.appbase.io/prisoner/andy*dufresne</a>&#8216;);
+var toolRef = prisonerRef.refToEdge(&#8216;rock*hammer&#8217;);</p>
+<dl class="docutils">
+<dt>/* <cite>toolRef</cite> points to the the path:</dt>
+<dd><ul class="first simple">
+<li>&#8216;<a class="reference external" href="https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer">https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer</a>&#8216;</li>
+</ul>
+<p class="last"><a href="#id63"><span class="problematic" id="id64">*</span></a>/</p>
+</dd>
+</dl>
+<p><a href="#id65"><span class="problematic" id="id66">``</span></a><a href="#id67"><span class="problematic" id="id68">`</span></a></p>
+<p>### in()
+TODO: explain
+Go up in path and get an <em>Appbase Reference</em>.</p>
+<p>#### Usage
+<tt class="docutils literal"><span class="pre">`javascript</span>
+<span class="pre">abRef.in()</span>
+<span class="pre">`</span></tt>
+Throws an error of the vertex has no upedge.</p>
+<p>#### Returns
+<cite>Appbase Reference</cite></p>
+<p>#### Example
+<a href="#id69"><span class="problematic" id="id70">``</span></a><a href="#id71"><span class="problematic" id="id72">`</span></a>javascript
+var toolRef = Appbase.ref(&#8216;<a class="reference external" href="https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer">https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer</a>&#8216;);
+var prisonerRef = toolRef.refToUpedge();</p>
+<dl class="docutils">
+<dt>/* <cite>prisonerRef</cite> points to the the path:</dt>
+<dd><ul class="first simple">
+<li>&#8216;<a class="reference external" href="https://shawshank.api.appbase.io/prisoner/andy*dufresne">https://shawshank.api.appbase.io/prisoner/andy*dufresne</a>&#8216;</li>
+</ul>
+<p class="last"><a href="#id73"><span class="problematic" id="id74">*</span></a>/</p>
+</dd>
+</dl>
+<p>var newRef = prisonerRef.refToUpedge(); //Throws an error
+<a href="#id75"><span class="problematic" id="id76">``</span></a><a href="#id77"><span class="problematic" id="id78">`</span></a></p>
+<p>## Vertex Snapshot
+<em>Vertex Snapshot</em> is an immutable copy of the data at a location in <em>Appbase</em>. It is passed to callbacks in all event firing. It can&#8217;t be modified and will never change. To modify data, use an Appbase reference.</p>
+<p>### Snapshot Methods
+TODO: index -&gt; priority
+Method | Returns
+-<a href="#id79"><span class="problematic" id="id80">|</span></a>-
+properties() | prop-value pairs in the form of a JavaScript object
+prevProperties() | the previous version of prop-value pairs
+namespace() | the <em>namespace</em> of the vertex
+name() | the edge name with which the vertex is stored in the current path
+index() | index of this vertex in the current path
+prevIndex() | the previous index of this vertex in the current path</p>
+<p>The following table shows what exact data would be returned by the methods in different kind of events.</p>
+<p>Method | value | edge*added | edge*removed | edge*changed | edge*moved
+-<a href="#id91"><span class="problematic" id="id92">|-|</span></a>-<a href="#id93"><span class="problematic" id="id94">|-|</span></a>-<a href="#id81"><span class="problematic" id="id82">|</span></a>-
+properties() | properties of the <strong>vertex being listened</strong> | properties of the vertex pointed by <strong>the edge</strong> | <strong>null</strong> | <strong>new</strong> properties of the vertex pointed by <strong>the edge</strong> | properties of the vertex pointed by <strong>the edge</strong>
+prevProperties() | <strong>null</strong> when the event is fired for <strong>the first time</strong> , <em>and</em>, <strong>previous version</strong> of properties when they are <strong>changed later on</strong> | <strong>null</strong> | properties of the vertex pointed by <strong>the edge being deleted</strong> | <strong>previous version</strong> of properties of the vertex pointed by the edge | same as <strong>properties()</strong>
+index() | <strong>index</strong> of the edge pointing to <strong>this vertex</strong> in the current path | <strong>index</strong> of <strong>the edge</strong> | <strong>null</strong> | <strong>index</strong> of <strong>the edge</strong> | <strong>current</strong> index of <strong>the edge</strong>
+prevIndex() | same as <strong>index()</strong> | <strong>null</strong> | <strong>index</strong> of <strong>the edge being deleted</strong> | same as <strong>index()</strong>  | <strong>previous</strong> index of <strong>the edge</strong></p>
+<p>## Privileged Methods
+These methods shouldn&#8217;t be a necessity in the normal application working. The use of these methods can be controlled via security rules.</p>
+<p>### Appbase.rename()</p>
+<p>Allows renaming of namespaces, vertex primary keys and moving a vertex to a different namespace.</p>
+<p>#### Usage
+<tt class="docutils literal"><span class="pre">`javascript</span>
+<span class="pre">Appbase.rename(old,new)</span>
+<span class="pre">`</span></tt></p>
+<blockquote>
+<div><ul class="simple">
+<li><strong>old</strong> <cite>String/Appbase Reference</cite> - old &#8216;/namespace&#8217;, or &#8216;/namespace/pk&#8217; or <cite>Appbase Reference</cite> poiting to &#8216;/namespace/pk&#8217;</li>
+<li><strong>new</strong> <cite>String</cite> - new &#8216;/namespace&#8217;, or &#8216;/namespace/pk&#8217;</li>
+</ul>
+</div></blockquote>
+<p>The old /namespace or /namespace/pk must exist and the new one must not.</p>
+<p>The edges pointing to the vertex being renamed will still work.</p>
+<p>#### Returns
+<cite>Appbase Reference</cite> - pointing to the new path, if renaming of a vertex is happening,
+<cite>undefined</cite> otherwise.</p>
+<p>#### Example
+<a href="#id83"><span class="problematic" id="id84">``</span></a><a href="#id85"><span class="problematic" id="id86">`</span></a>javascript
+Appbase.rename(&#8216;/users&#8217;, &#8216;/prisoners&#8217;); // Renaming a namespace</p>
+<p>Appbase.rename(&#8216;/users/abc&#8217;, &#8216;/users/xyz&#8217;); //Renaming the primary key</p>
+<p>Appbase.rename(&#8216;/users/abc&#8217;, &#8216;/prisoners&#8217;); // Moving a vertex to another namespace</p>
+<p>Appbase.rename(&#8216;/users/abc&#8217;, &#8216;/prisoners/pqr&#8217;); // Moving a vertex to another namespace and renaming its primary key too</p>
+<p>Appbase.rename(&#8216;/user/pqr/xyz&#8217;,&#8217;/user/abc/klm&#8217;); //Throws an error, as the path should only be up to /namespace/pk</p>
+<p>Appbase.rename(&#8216;/users&#8217;, &#8216;/prisoners/abc&#8217;); // Throws an error, if <cite>old</cite> is a namespace, the <cite>new</cite> has to a be namespace.</p>
+<p>var abRef = (&#8216;/user/abc&#8217;);
+var abNewRef = Appbase.rename(abRef,&#8217;/user/pqr&#8217;); //Renaming the primary key. <cite>abRef</cite> will now turn invalid, and listeners won&#8217;t work, until a new vertex at /user/abc is created. Use <cite>abNewRef</cite> instead.</p>
+<p>var prisonerRef = Appbase.rename(abNewRef,&#8217;/prisoner&#8217;); // Moving a vertex to another namespace.
+<a href="#id87"><span class="problematic" id="id88">``</span></a><a href="#id89"><span class="problematic" id="id90">`</span></a></p>
+<blockquote>
+<div>[1]: <a class="reference external" href="http://appbase.io/docs-overview">http://appbase.io/docs-overview</a></div></blockquote>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Appbase Javascript API</a><ul>
+<li><a class="reference internal" href="#concepts">Concepts</a></li>
+<li><a class="reference internal" href="#appbase-datatypes">Appbase Datatypes</a><ul>
+<li><a class="reference internal" href="#primitive">Primitive</a></li>
+<li><a class="reference internal" href="#objects">Objects</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#appbase-object">Appbase Object</a><ul>
+<li><a class="reference internal" href="#appbase-new"><span class="function-name">Appbase.new()</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<h3>This Page</h3>
+<ul class="this-page-menu">
+  <li><a href="../bugs.html">Report a Bug</a></li>
+  <li><a href="../_sources/js/index.txt"
+         rel="nofollow">Show Source</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>  
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li><img src="../_static/appbase.png" alt=""
+                 style="vertical-align: middle; margin-top: -1px"/></li>
+        <li><a href="http://www.appbase.io/">Appbase</a> &raquo;</li>
+        <li>
+          <a href="../index.html">Appbase 0.1 documentation</a> &raquo;
+        </li>
+ 
+      </ul>
+    </div>  
+    <div class="footer">
+    &copy; <a href="../copyright.html">Copyright</a> 2014-2014, Appbase Inc..
+    <br />
+    Last updated on None.
+    <a href="../bugs.html">Found a bug</a>?
+    <br />
+    Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.
+    </div>
+
+  </body>
+</html>

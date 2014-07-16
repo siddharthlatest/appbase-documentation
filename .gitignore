@@ -1,0 +1,6 @@
+# Ignore the example directory
+example
+
+# Ignore swp files
+*.swp
+*~
