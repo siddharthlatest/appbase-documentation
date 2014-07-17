@@ -5,7 +5,7 @@ Appbase Javascript API
 **********************
 |
 
-Concepts
+Brief Overview
 ========
 
 The Appbase data model is represented as a graph. Vertices are used for storing and retrieving primitive data, and linked to other vertices using edges.
@@ -70,443 +70,535 @@ Appbase global are the operations on the global `Appbase` object.
         }
     );
 
+| 
+.. role:: function-name
 
-### Appbase.ref()
-An *Appbase reference* allows operating on a vertex stored in *Appbase* at some path. This method creates a reference pointing to a path.
+:function-name:`Appbase.ref()`
+-------------
 
-#### Usage
-```javascript
-Appbase.ref(path)
-```
- - **path** `String` - path to the vertex in Appbase
-A *Path* in Appbase consists of one or more linked vertices with the endpoint always being a vertex. '/' is used to demarcate between consequent vertices. The *base-url* is a unique string for the Application, and the first element after the url represents a namespace, and following elements are objects.
+  An *Appbase reference* allows operating on a vertex stored in *Appbase* at some path. This method creates a reference pointing to a path.
 
-#### Returns
-`Appbase Reference` - pointing to the vertex located at the given path.
+  **Returns**
+    ``Appbase Reference`` - pointing to the vertex located at the given path.
 
-#### Example
-```javascript
-var abRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer');
-```
+  **Usage**
+    ``Appbase.ref(path)``
 
-The *path*, 'https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer' points to a *vertex*, which is inserted as the **edgename : 'rock*hammer'** in the *vertex* of the **namespace : 'prisoner'** with **key : andy*dufresne**. The application's *base url* is **https://shawshank.api.appbase.io**.
+    | **path** ``String`` - path to the vertex in Appbase
 
-## Appbase Reference
-Operations, such as read/write on vertex, located at a path can be done using an `Appbase Reference`.
+  A *Path* in Appbase consists of one or more linked vertices with the endpoint always being a vertex. '/' is used to demarcate between consequent vertices. The *base-url* is a unique string for the Application, and the first element after the url represents a namespace, and following elements are objects.
 
-### path()
-To know what path this reference points to.
 
-#### Usage
-```javascript
-abRef.path()
-```
+  **Example**
 
-#### Returns
-`String` - The path
+  .. sourcecode:: js
 
-### properties.add()
-Add a property into the vertex and give it a value, or set a value for an existing property.
+    var abRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy_dufresne/rock_hammer');
 
-#### Usage
-```javascript
-abRef.properties.add(prop,val,[callback])
-```
- - **prop** `String` - property name
- - **value** `String/Number` - value
- - **callback** `Function` - will be passed these as arguments:
-    - **error** `Boolean/String`
-    - **abRef** `Appbase Reference` - points to the same path on which the method is called
-    - **snapObj** `Vertex Snapshot` - Snapshot of the new data stored in the vertex.
 
-#### Returns
-`Appbase Reference` - pointing to the same path where the method is called. This allows chaining of methods.
+  The *path*, 'https://shawshank.api.appbase.io/prisoner/andy_dufresne/rock_hammer' points to a *vertex*, which is inserted as the **edgename : 'rock_hammer'** in the *vertex* of the **namespace : 'prisoner'** with **key : andy_dufresne**. The application's *base url* is **https://shawshank.api.appbase.io**.
 
-### properties.commit()
+| 
+
+Appbase Reference
+=================
+
+Operations, such as read/write on vertex, located at a path can be done using an **Appbase Reference**.
+|
+
+.. role:: function-name
+
+:function-name:`path()`
+----------------
+
+  To know what path this reference points to.
+
+  **Returns**
+    ``String`` - The path
+
+  **Usage**
+    ``abRef.path()``
+|
+
+.. role:: function-name
+
+:function-name:`properties.add()`
+----------------
+
+  Add a property into the vertex and give it a value, or set a value for an existing property.
+
+  **Returns**
+    `Appbase Reference` - pointing to the same path where the method is called. This allows chaining of methods.
+
+  **Usage**
+    ``abRef.properties.add(prop,val,[callback])``
+
+    - **prop** `String` - property name
+    - **value** `String/Number` - value
+    - **callback** `Function` - will be passed these as arguments:
+        - **error** `Boolean/String`
+        - **abRef** `Appbase Reference` - points to the same path on which the method is called
+        - **snapObj** `Vertex Snapshot` - Snapshot of the new data stored in the vertex.
+|
+
+.. role:: function-name
+
+:function-name:`properties.commit()`
+----------------
+
 A strongly consistent *set* operation. It allows you create consistent aggregators, such as counters.
 
-#### Usage
-```javascript
-abRef.properties.commit(property, apply, [callback])
-```
- - **property** `String`
- - **apply** `function` - The function should return which returns String/Number. The old value is passed in as an argument to the function
- - **callback** `Function` - will be passed these as arguments:
-    - **error** `Boolean/String`
-    - **abRef** `Appbase Reference` - points to the same path on which the method is called
-    - **snapObj** `Vertex Snapshot` - - Snapshot of the new data stored in the vertex.
-    - **isCommitted** `Boolean` - Whether the final value is committed or is still the new data returned from the server 
+  **Returns**
+    `Appbase Reference` - pointing to the same path where the method is called. This allows chaining of methods.
 
-#### Returns
-`Appbase Reference` - pointing to the same path where the method is called. This allows chaining of methods.
+  **Usage**
+    ``abRef.properties.commit(property, apply, [callback])``
+
+    - **property** `String`
+    - **apply** `function` - The function should return which returns String/Number. The old value is passed in as an argument to the function
+    - **callback** `Function` - will be passed these as arguments:
+        - **error** `Boolean/String`
+        - **abRef** `Appbase Reference` - points to the same path on which the method is called
+        - **snapObj** `Vertex Snapshot` - Snapshot of the new data stored in the vertex.
+        - **isCommitted** `Boolean` - Whether the final value is committed or is still the new data returned from the server 
+
+  
+
+  **Example**
+
+  .. sourcecode:: js 
+
+    var toolRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy_dufresne/rock_hammer');
+
+    toolRef.properties.commit('size',function(prevSize) {
+      return prevSize + 1;
+    });
+
+    /* The size of Dufresne's rock hammer can be increased
+     * consistently (no changes will be lost). If 3 people
+     * the size by 1 each simultaneously, the size will
+     * increase by 3.
+     */
+|
+
+.. role:: function-name
+
+:function-name:`properties.remove()`
+----------------
+
+  Removes a property.
+
+  **Returns**
+    `Appbase Reference` - pointing to the same path where the method is called. This allows chaining of methods.
+
+  **Usage**
+    ``abRef.properties.remove(prop,[callback])``
+
+    - **prop** `String` - property name
+    - **callback** `Function` - will be passed these as arguments:
+        - **error** `Boolean/String`
+        - **abRef** `Appbase Reference` - points to the same path on which the method is called
+        - **snapObj** `Vertex Snapshot` - - Snapshot of the new data stored in the vertex.
+
+|
+
+.. role:: function-name
+
+:function-name:`named_edges.add()`
+------------
+
+  Sets/inserts a unidirectional edge to another vertex. This operation also creates a new accessible path, which can be used to create an `Appbase Reference`.
+
+  **Returns**
+    `Appbase Reference` - pointing to the same path where the method is called. This allows chaining of methods.
+
+  **Usage**
+    ``abRef.named*edges.add(abRef, edgename, [callback])``
+
+    - **edgename** `String`
+    - **abRef** `Appbase Reference` - The vertex where the edge would point
+    - **callback** `Function` - will be passed these as arguments:
+        - **error** `Boolean/String`
+        - **abRef** `Appbase Reference` - points to the same path on which the method is called
+
+  For named edges, if some edge exists and points to a vertex, and now its passed as `edgename` with an `Appbase Reference` of some other vertex, the edge will be *replaced*. It is considered to be *removed* and *added* again, therefore, **edge_removed** event will be fired, followed by **edge_added** for the same edge. Take a look at the documentation of `abRef.on()` for more details on the events.
 
 
-#### Example
-```javascript
-var toolRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer');
+  **Example**
 
-toolRef.properties.commit('size',function(prevSize) {
-  return prevSize + 1;
-});
+  .. sourcecode:: js
 
-/* The size of Dufresne's rock hammer can be increased
- * consistently (no changes will be lost). If 3 people
- * the size by 1 each simultaneously, the size will
- * increase by 3.
- */
+    var prisonerRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy_dufresne');
+    var toolRef = Appbase.new('tool'); // new vertex of the namespace 'tool'
+
+    toolRef.properties.add('size',12);
+    prisonerRef.named_edges.add('rock_hammer',toolRef);
+
+    /* Now Dufresne's rock hammer can be accessed directly with 
+     * the path: 'https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer'
+     */
+
+|
+.. role:: function-name
+
+:function-name:`ordered_edges.add()`
+-------------------
+
+  Sets/inserts a unidirectional edge to another vertex. This operation also creates a new accessible path, which can be used to create an `Appbase Reference`.
+
+  **Returns**
+    `Appbase Reference` - pointing to the same path where the method is called. This allows chaining of methods.
+
+  **Usage**
+    ``abRef.edges.add(abRef, [priority], [callback])``
+
+    - **abRef** `Appbase Reference` - The vertex where the edge would point
+    - **priority** *(optional)* `Number` - A natural number, negative, positive or zero. If no priority is given, server timestamp will given as the priority, allowing you to fetch the edges in the same order as they were added
+    - **callback** `Function` - will be passed these as arguments:
+        - **error** `Boolean/String`
+        - **abRef** `Appbase Reference` - points to the same path on which the method is called
+
+  If `abRef` for an existing ordered edge is passed with a different priority, the edge  is moved to that index, and all the following edges are considered moved, too. **edge_moved** event will be fired on all of them. 
+
+|
+.. role:: function-name
+
+:function-name:`named_edges.remove()`
+------------
+
+  Removes a edge.
+
+  **Returns**
+    `Appbase Reference` - pointing to the same path where the method is called. This allows chaining of methods.
+
+  **Usage**
+    ``abRef.named*edges.remove(edgename,[callback])``
+
+    - **edgename** `String` - for named edges
+    - **callback** `Function` - will be passed these as arguments:
+        - **error** `Boolean/String`
+        - **abRef** `Appbase Reference` - points to the same path on which the method is called
+
+
+|
+.. role:: function-name
+
+:function-name:`ordered_edges.remove()`
+---------------
+
+  Removes a edge.
+
+  **Returns**
+    `Appbase Reference` - pointing to the same path where the method is called. This allows chaining of methods.
+
+  **Usage**
+    ``abRef.ordered*edges.remove(abRef,[callback])``
+
+    - **abRef** `Appbase Reference` - reference to the ordered edge
+    - **callback** `Function` - will be passed these as arguments:
+        - **error** `Boolean/String`
+        - **abRef** `Appbase Reference` - points to the same path on which the method is called
+
+|
+.. role:: function-name
+
+:function-name:`destroy()`
+-----------------
+
+  Delete the vertex from *Appbase*, edges to this vertex in other vertexes will be removed as well. The appbase reference now turns invalid and listeners won't fire. Any data modification operation will fail.
+
+  **Usage**
+    ``abRef.destroy([callback])``
+
+    - **callback** `Function` - will be passed these as arguments:
+        - **error** `Boolean/String`
+
+|
+.. role:: function-name
+
+:function-name:`on('properties')`
+-----------------
+
+  Reading of data from *Appbase* happens through listening to events on *Appbase References*. This event listens to changes in the properties at a path. 
+
+  It immediately fires the event with existing properties, when listening for the first time, then fires again whenever the properties are changed. 
+
+  **Returns**
+    `String` - the listener's name and can be used to turn the listener off.
+
+  **Usage**
+    ``abRef.on('properties',[listenerName],callback)``
+
+    - **listenerName** *(Optional)* `String` - Name given to the listener.
+    - **callback** `Function` - will be passed these as arguments:
+        - **error** `Boolean/String`
+        - **abRef** `Appbase Reference` - points to the path on which the event is fired
+        - **snapObj** `Vertex Snapshot` - Snapshot of the data stored in the vertex. Take a look at the documentation of `Vertex Snapshot`
+
+  `listenerName` is a unique string, which can be used later on to turn this listener off using `offWithName(listenerName)`. This is a way to keep track of listeners. If a `listenerName` is given again with a different callback function, the old callback function is replaced, and will no longer be called when the event is fired, instead the new function will be called. If no `listenerName` is given, a unique string will be generated as the listener's name and returned.
+
+
+  **Example**
+
+  .. sourcecode:: js
+
+    TODO: change according to the method signature
+    var toolRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy_dufresne/rock_hammer');
+    // Existing data : {size:12}
+
+    toolRef.on('properties',function(err,ref,snap){
+       console.log(snap.properties().size); 
+    );
+
+    setTimeout(function(){
+        toolRef.properties.add('size',13);
+    },2000);
+
+    /* It would immediately log '12' - the existing properties. 
+     * After 2 secs, It would log '13'.
+     */
+
+|
+.. role:: function-name
+
+:function-name:`on('edge_added')`
+---------------
+
+  Get existing edges inserted at a location, and listen to new ones.
+
+  **Returns**
+    `String` - the listener's name and can be used to turn the listener off.
+
+  **Usage**
+    ``abRef.on('edge*added',edgetype,[listenerName],[options],callback)``
+
+    - **edgetype** `String` - 'ordered' or 'named'
+    - **listenerName** *(Optional)* `String` - Name given to the listener. For details, take a look at the documentation of `on('properties')`
+    - **options** `Object`
+        - **limit** How many existing edges to fetch - only for ordered edges
+        - **startAt** `Number` - Priority to start with - only for ordered edges
+        - **endAt** `Number` - Priority to end with - only for ordered edges
+        - **skip**  `Number` - Skip initial edges - only for ordered edges
+        - **noData** `Boolean` - Whether to include the data stored at the vertex where the edge points 
+    - **callback** `Function` - will be passed these as arguments:
+        - **error** `Boolean/String`
+        - **abRef** `Appbase Reference` - pointing to path of the edge
+        - **[snapObj]** `Vertex Snapshot` - Snapshot of the data stored in the vertex, where the edge points. Take a look at the documentation of `Vertex Snapshot`
+
+  `snapObj` will not be passed if `{noData: true}` is passed as the options to the listener.
+
+  `startAt` and `limit` are only effective for retrieving the existing properties. New edges will be returned regardless of their index.
+
+
+  **Example**
+
+  .. sourcecode: js
+
+    TODO: change according to the method signature
+    var redRef = Appbase.new('prisoner','ellis_boyd_red'); // New prisoner
+    redRef.properties.add('firstname','Ellis Boyd');
+    redRef.properties.add('lastname','Redding');
+    redRef.properties.add('nick','Red');
+
+    var andyRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy_dufresne');
+
+    andyRef.on('edge_added',function(edgeSnap){
+        console.log('Name:', edgeSnap.val().nick);
+    });
+
+    andyRef.edges.add('best*friend',redRef);
+
+    /* stdout
+     * |-----------------
+     * | Name: Red
+     * |-----------------
+     */
+
+|
+.. role:: function-name
+
+:function-name:`on('edge_removed')`
+--------------
+
+  Listen to removal of edges. 
+
+  **Returns**
+    `String` - the listener's name and can be used to turn the listener off.
+
+  **Usage**
+    ``abRef.on('edge*removed',edgetype,[listenerName],callback)``
+
+    - **edgetype** `String` - 'ordered' or 'named'
+    - **listenerName** *(Optional)* `String` - Name given to the listener. For details, take a look at the documentation of `on('properties')`.
+    - **callback** `Function` - will be passed these as arguments:
+        - **error** `Boolean/String`
+        - **abRef** `Appbase Reference` - pointing to path of the edge
+        - **snapObj** `Vertex Snapshot` - Snapshot of the data stored in the vertex, where the edge used to point. Take a look at the documentation of `Vertex Snapshot`
+
+|
+.. role:: function-name
+
+:function-name:`on('edge_changed')`
+--------------
+
+  If the properties of the vertex, pointed by an existing edge is changed, this event is fired.
+
+  **Returns**
+    `String` - the listener's name and can be used to turn the listener off.
+
+  **Usage**
+    ``abRef.on('edge*changed',edgetype,[listenerName],callback)``
+
+  - **edgetype** `String` - 'ordered' or 'named'
+  - **listenerName** *(Optional)* `String` - Name given to the listener. For details, take a look at the documentation of `on('properties')`.
+  - **callback** `Function` - will be passed these as arguments:
+      - **error** `Boolean/String`
+      - **abRef** `Appbase Reference` - pointing to path of the edge
+      - **snapObj** `Vertex Snapshot` - Snapshot of the data stored in the vertex, where the edge points. Take a look at the documentation of `Vertex Snapshot`
+
+  For this event to fire, in the background the vertexes pointed by all the edges are listened for **properties** event, and this would be a costly operation in terms of bandwidth if there are a huge number of edges.
+
+
+  **Example**
+
+  .. sourcecode: js
+
+    TODO: change according to the method signature
+    var andy = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy_dufresne');
+
+    var toolRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy_dufresne/rock_hammer');
+    // Existing data at this location: {size:12}
+
+
+    andy.on('edge*changed',function(snapshot){
+        for (var prop in snapshot.properties()) {
+            console.log(prop,':',snapshot.properties()[prop]);
+        }
+    })
+
+    toolRef.properties.add('usage','prison break');
+
+    /* stdout
+     * |-----------------
+     * | size : 12
+     * | usage : prison break
+     * |-----------------
+     */
+
+|
+.. role:: function-name
+
+:function-name:`on('edge_moved')`
+---------------------
+
+  TODO: only on ordered edges
+  This event is fired, when the order of an edge is changed. 
+
+  When the order of an edge is manually changed by calling `abRef.edges.add()` on an existing edge, also the other edges are moved, either they are shifted upward or downward by '1' in the order. This event is fired for all the edges, moved manually or automatically.
+
+  **Returns**
+    `String` - the listener's name and can be used to turn the listener off.
+
+  **Usage**
+    ``abRef.on('edge*moved',[listenerName],callback)``
+
+    - **listenerName** *(Optional)* `String` - Name given to the listener. For details, take a look at the documentation of `on('properties')`.
+    - **listenDepth** `Number` - The depth of edges up to which listen for data changes. Default value is `0`, meaning no listening on the properties.
+    - **callback** `Function` - will be passed these as arguments:
+        - **error** `Boolean/String`
+        - **abRef** `Appbase Reference` - pointing to path of the edge
+        - **snapObj** `Vertex Snapshot` - Snapshot of the data stored in the vertex, where the edge points. Take a look at the documentation of `Vertex Snapshot`
  
-```
-
-### properties.remove()
-Removes a property.
-
-#### Usage
-```javascript
-abRef.properties.remove(prop,[callback])
-```
- - **prop** `String` - property name
- - **callback** `Function` - will be passed these as arguments:
-    - **error** `Boolean/String`
-    - **abRef** `Appbase Reference` - points to the same path on which the method is called
-    - **snapObj** `Vertex Snapshot` - - Snapshot of the new data stored in the vertex.
-
-#### Returns
-`Appbase Reference` - pointing to the same path where the method is called. This allows chaining of methods.
-
-### named*edges.add()
-Sets/inserts a unidirectional edge to another vertex. This operation also creates a new accessible path, which can be used to create an `Appbase Reference`.
-
-#### Usage
-```javascript
-abRef.named*edges.add(abRef, edgename, [callback])
-```
- - **edgename** `String`
- - **abRef** `Appbase Reference` - The vertex where the edge would point
- - **callback** `Function` - will be passed these as arguments:
-    - **error** `Boolean/String`
-    - **abRef** `Appbase Reference` - points to the same path on which the method is called
-
-Fo named edges, if some edge exists and points to a vertex, and now its passed as `edgename` with an `Appbase Reference` of some other vertex, the edge will be *replaced*. It is considered to be *removed* and *added* again, therefore, **edge*removed** event will be fired, followed by **edge*added** for the same edge. Take a look at the documentation of `abRef.on()` for more details on the events.
-
-#### Returns
-`Appbase Reference` - pointing to the same path where the method is called. This allows chaining of methods.
-
-#### Example
-```javascript
-var prisonerRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy*dufresne');
-var toolRef = Appbase.new('tool'); // new vertex of the namespace 'tool'
-
-toolRef.properties.add('size',12);
-prisonerRef.named*edges.add('rock*hammer',toolRef);
-
-/* Now Dufresne's rock hammer can be accessed directly with 
- * the path: 'https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer'
- */
-```
-
-### ordered*edges.add()
-Sets/inserts a unidirectional edge to another vertex. This operation also creates a new accessible path, which can be used to create an `Appbase Reference`.
-
-#### Usage
-```javascript
-abRef.edges.add(abRef, [priority], [callback])
-```
- - **abRef** `Appbase Reference` - The vertex where the edge would point
- - **priority** *(optional)* `Number` - A natural number, negative, positive or zero. If no priority is given, server timestamp will given as the priority, allowing you to fetch the edges in the same order as they were added
- - **callback** `Function` - will be passed these as arguments:
-    - **error** `Boolean/String`
-    - **abRef** `Appbase Reference` - points to the same path on which the method is called
-
-If `abRef` for an existing ordered edge is passed with a different priority, the edge  is moved to that index, and all the following edges are  considered moved, too. **edge*moved** event will be fired on all of them. 
-
-#### Returns
-`Appbase Reference` - pointing to the same path where the method is called. This allows chaining of methods.
-
-### named*edges.remove()
-Removes a edge.
-
-#### Usage
-```javascript
-abRef.named*edges.remove(edgename,[callback])
-```
- - **edgename** `String` - for named edges
- - **callback** `Function` - will be passed these as arguments:
-    - **error** `Boolean/String`
-    - **abRef** `Appbase Reference` - points to the same path on which the method is called
-
-#### Returns
-`Appbase Reference` - pointing to the same path where the method is called. This allows chaining of methods.
-
-
-### ordered*edges.remove()
-Removes a edge.
-
-#### Usage
-```javascript
-abRef.ordered*edges.remove(abRef,[callback])
-```
- - **abRef** `Appbase Reference` - reference to the ordered edge
- - **callback** `Function` - will be passed these as arguments:
-    - **error** `Boolean/String`
-    - **abRef** `Appbase Reference` - points to the same path on which the method is called
-
-#### Returns
-`Appbase Reference` - pointing to the same path where the method is called. This allows chaining of methods.
-
-
-### destroy()
-Delete the vertex from *Appbase*, edges to this vertex in other vertexes will be removed as well. The appbase reference now turns invalid and listeners won't fire. Any data modification operation will fail.
-
-#### Usage
-```javascript
-abRef.destroy([callback])
-```
-- **callback** `Function` - will be passed these as arguments:
-    - **error** `Boolean/String`
-
-### on('properties')
-
-Reading of data from *Appbase* happens through listening to events on *Appbase References*. This event listens to changes in the properties at a path. 
-
-It immediately fires the event with existing properties, when listening for the first time, then fires again whenever the properties are changed. 
-
-#### Usage
-```javascript
-abRef.on('properties',[listenerName],callback)
-```
- - **listenerName** *(Optional)* `String` - Name given to the listener.
- - **callback** `Function` - will be passed these as arguments:
-    - **error** `Boolean/String`
-    - **abRef** `Appbase Reference` - points to the path on which the event is fired
-    - **snapObj** `Vertex Snapshot` - Snapshot of the data stored in the vertex. Take a look at the documentation of `Vertex Snapshot`
-
-`listenerName` is a unique string, which can be used later on to turn this listener off using `offWithName(listenerName)`. This is a way to keep track of listeners. If a `listenerName` is given again with a different callback function, the old callback function is replaced, and will no longer be called when the event is fired, instead the new function will be called. If no `listenerName` is given, a unique string will be generated as the listener's name and returned.
-
-#### Returns
-`String` - the listener's name and can be used to turn the listener off.
-
-#### Example
-```javascript
-TODO: change according to the method signature
-var toolRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer');
-// Existing data : {size:12}
-
-toolRef.on('properties',function(err,ref,snap){
-   console.log(snap.properties().size); 
-);
-
-setTimeout(function(){
-    toolRef.properties.add('size',13);
-},2000);
-
-/* It would immediately log '12' - the existing properties. 
- * After 2 secs, It would log '13'.
- */ 
-```
-
-### on('edge*added')
-Get existing edges inserted at a location, and listen to new ones.
-
-#### Usage
-```javascript
-abRef.on('edge*added',edgetype,[listenerName],[options],callback)
-```
- - **edgetype** `String` - 'ordered' or 'named'
- - **listenerName** *(Optional)* `String` - Name given to the listener. For details, take a look at the documentation of `on('properties')`
- - **options** `Object`
-     - **limit** How many existing edges to fetch - only for ordered edges
-     - **startAt** `Number` - Priority to start with - only for ordered edges
-     - **endAt** `Number` - Priority to end with - only for ordered edges
-     - **skip**  `Number` - Skip initial edges - only for ordered edges
-     - **noData** `Boolean` - Whether to include the data stored at the vertex where the edge points 
- - **callback** `Function` - will be passed these as arguments:
-    - **error** `Boolean/String`
-    - **abRef** `Appbase Reference` - pointing to path of the edge
-    - **[snapObj]** `Vertex Snapshot` - Snapshot of the data stored in the vertex, where the edge points. Take a look at the documentation of `Vertex Snapshot`
-
-`snapObj` will not be passed if `{noData: true}` is passed as the options to the listener.
-
-`startAt` and `limit` are only effective for retrieving the existing properties. New edges will be returned regardless of their index.
-
-#### Returns
-`String` - the listener's name and can be used to turn the listener off.
-
-#### Example
-```javascript
-TODO: change according to the method signature
-var redRef = Appbase.new('prisoner','ellis*boyd*red'); // New prisoner
-redRef.properties.add('firstname','Ellis Boyd');
-redRef.properties.add('lastname','Redding');
-redRef.properties.add('nick','Red');
-
-var andyRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy*dufresne');
-
-andyRef.on('edge*added',function(edgeSnap){
-    console.log('Name:', edgeSnap.val().nick);
-});
-
-andyRef.edges.add('best*friend',redRef);
-
-/* stdout
- * |-----------------
- * | Name: Red
- * |-----------------
- */
-```
-
-### on('edge*removed')
-Listen to removal of edges. 
-
-#### Usage
-```javascript
-abRef.on('edge*removed',edgetype,[listenerName],callback)
-```
- - - **edgetype** `String` - 'ordered' or 'named'
- - **listenerName** *(Optional)* `String` - Name given to the listener. For details, take a look at the documentation of `on('properties')`.
- - **callback** `Function` - will be passed these as arguments:
-    - **error** `Boolean/String`
-    - **abRef** `Appbase Reference` - pointing to path of the edge
-    - **snapObj** `Vertex Snapshot` - Snapshot of the data stored in the vertex, where the edge used to point. Take a look at the documentation of `Vertex Snapshot`
-
-#### Returns
-`String` - the listener's name and can be used to turn the listener off.
-
-###  on('edge*changed')
-If the properties of the vertex, pointed by an existing edge is changed, this event is fired.
-
-#### Usage
-```javascript
-abRef.on('edge*changed',edgetype,[listenerName],callback)
-```
- - **edgetype** `String` - 'ordered' or 'named'
- - **listenerName** *(Optional)* `String` - Name given to the listener. For details, take a look at the documentation of `on('properties')`.
- - **callback** `Function` - will be passed these as arguments:
-    - **error** `Boolean/String`
-    - **abRef** `Appbase Reference` - pointing to path of the edge
-    - **snapObj** `Vertex Snapshot` - Snapshot of the data stored in the vertex, where the edge points. Take a look at the documentation of `Vertex Snapshot`
-
-For this event to fire, in the background the vertexes pointed by all the edges are listened for **properties** event, and this would be a costly operation in terms of bandwidth if there are a huge number of edges.
-
-#### Returns
-`String` - the listener's name and can be used to turn the listener off.
-
-
-#### Example
-```javascript
-TODO: change according to the method signature
-var andy = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy*dufresne');
-
-var toolRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer');
-// Existing data at this location: {size:12}
-
-
-andy.on('edge*changed',function(snapshot){
-    for (var prop in snapshot.properties()) {
-        console.log(prop,':',snapshot.properties()[prop]);
-    }
-})
-
-toolRef.properties.add('usage','prison break');
-
-/* stdout
- * |-----------------
- * | size : 12
- * | usage : prison break
- * |-----------------
- */
-```
-
-###  on('edge*moved')
-TODO: only on ordered edges
-This event is fired, when the order of an edge is changed. 
-
-When the order of an edge is manually changed by calling `abRef.edges.add()` on an existing edge, also the other edges are moved, either they are shifted upward or downward by '1' in the order. This event is fired for all the edges, moved manually or automatically.
-
-#### Usage
-```javascript
-abRef.on('edge*moved',[listenerName],callback)
-```
- - **listenerName** *(Optional)* `String` - Name given to the listener. For details, take a look at the documentation of `on('properties')`.
- - **listenDepth** `Number` - The depth of edges up to which listen for data changes. Default value is `0`, meaning no listening on the properties.
- - **callback** `Function` - will be passed these as arguments:
-    - **error** `Boolean/String`
-    - **abRef** `Appbase Reference` - pointing to path of the edge
-    - **snapObj** `Vertex Snapshot` - Snapshot of the data stored in the vertex, where the edge points. Take a look at the documentation of `Vertex Snapshot`
- 
-#### Returns
-`String` - the listener's name and can be used to turn the listener off.
-
-
-
-### off()
-Turn off the listeners on an event.
-
-#### Usage
-```javascript
-abRef.off([event])
-```
- - **event** *(optional)* `String` - All the listeners on this event, will be turned off. If no event is given, all the listeners on all the events will be turned off.
-
-#### Returns
-`Array` - containing listeners' names, which have been turned off.
-
-### offWithName()
-Turn off a listener by its name.
-
-#### Usage
-```javascript
-offWithName(listenerName)
-```
- - **listenerName** `String` - The unique name given to the listener while calling `on(event)`.
-
-### out()
-TODO: text
-Get an *Appbase Reference* pointing to a edge of the current vertex. This is just string manipulation on the path, and the reference will be returned even if the edge doesn't exist, but read/write operations will fail.
-
-#### Usage
-```javascript
-abRef.out(edgename)
-```
-
-#### Returns
-`Appbase Reference`
-
-#### Example
-```javascript
-var prisonerRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy*dufresne');
-var toolRef = prisonerRef.refToEdge('rock*hammer');
-
-/* `toolRef` points to the the path:
- * 'https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer'
- */
-```
-
-### in()
-TODO: explain
-Go up in path and get an *Appbase Reference*.
-
-#### Usage
-```javascript
-abRef.in()
-```
-Throws an error of the vertex has no upedge.
-
-#### Returns
-`Appbase Reference`
-
-#### Example
-```javascript
-var toolRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer');
-var prisonerRef = toolRef.refToUpedge();
-
-/* `prisonerRef` points to the the path:
- * 'https://shawshank.api.appbase.io/prisoner/andy*dufresne'
- */
- 
-var newRef = prisonerRef.refToUpedge(); //Throws an error
-```
-
-## Vertex Snapshot
+|
+.. role:: function-name
+
+:function-name:`off()`
+-------------
+
+  Turn off the listeners on an event.
+
+  **Returns**
+    `Array` - containing listeners' names, which have been turned off.
+
+  **Usage**
+    ``abRef.off([event])``
+
+    - **event** *(optional)* `String` - All the listeners on this event, will be turned off. If no event is given, all the listeners on all the events will be turned off.
+
+|
+.. role:: function-name
+
+:function-name:`offWithName()`
+---------------
+
+  Turn off a listener by its name.
+
+  **Usage**
+    ``offWithName(listenerName)``
+
+  - **listenerName** `String` - The unique name given to the listener while calling `on(event)`.
+
+|
+.. role:: function-name
+
+:function-name:`out()`
+-------------
+
+  TODO: text
+  Get an *Appbase Reference* pointing to a edge of the current vertex. This is just string manipulation on the path, and the reference will be returned even if the edge doesn't exist, but read/write operations will fail.
+
+  **Returns**
+    `Appbase Reference`
+
+  **Usage**
+    ``abRef.out(edgename)``
+
+  **Example
+
+  .. sourcecode:: js
+
+    var prisonerRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy*dufresne');
+    var toolRef = prisonerRef.refToEdge('rock*hammer');
+
+    /* `toolRef` points to the the path:
+     * 'https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer'
+     */
+
+|
+.. role:: function-name
+
+:function-name:`in()`
+------------
+
+  TODO: explain
+  Go up in path and get an *Appbase Reference*.
+
+  **Returns**
+    `Appbase Reference`
+
+  **Usage**
+    ``abRef.in()``
+
+  Throws an error of the vertex has no upedge.
+
+  **Example**
+
+  .. sourcecode:: js
+
+    var toolRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer');
+    var prisonerRef = toolRef.refToUpedge();
+
+    /* `prisonerRef` points to the the path:
+     * 'https://shawshank.api.appbase.io/prisoner/andy*dufresne'
+     */
+     
+    var newRef = prisonerRef.refToUpedge(); //Throws an error
+
+|
+
+Vertex Snapshot
+===============
+
 *Vertex Snapshot* is an immutable copy of the data at a location in *Appbase*. It is passed to callbacks in all event firing. It can't be modified and will never change. To modify data, use an Appbase reference.
 
 ### Snapshot Methods
@@ -522,6 +614,13 @@ prevIndex() | the previous index of this vertex in the current path
 
 The following table shows what exact data would be returned by the methods in different kind of events.
 
+===================  =================  ==================  ================ ====================
+**Method**           **value**          **edge_added**      **edge_removed** **edge_changed**
+===================  =================  ==================  ================ ====================
+:func:`abs`          |func-dict|_       :func:`help`        :func:`min`       :func:`setattr`
+:func:`all`          :func:`dir`        :func:`hex`         :func:`next`      :func:`slice`
+===================  =================  ==================  ================ ====================
+
 Method | value | edge*added | edge*removed | edge*changed | edge*moved
 -|-|-|-|-|-
 properties() | properties of the **vertex being listened** | properties of the vertex pointed by **the edge** | **null** | **new** properties of the vertex pointed by **the edge** | properties of the vertex pointed by **the edge**
@@ -530,49 +629,53 @@ index() | **index** of the edge pointing to **this vertex** in the current path 
 prevIndex() | same as **index()** | **null** | **index** of **the edge being deleted** | same as **index()**  | **previous** index of **the edge**
 
 
+|
+Privileged Methods
+==================
 
-## Privileged Methods
 These methods shouldn't be a necessity in the normal application working. The use of these methods can be controlled via security rules.
 
-### Appbase.rename()
+|
+.. role:: function-name
 
-Allows renaming of namespaces, vertex primary keys and moving a vertex to a different namespace.
+:function-name:`Appbase.rename()`
+-----------------
 
+  Allows renaming of namespaces, vertex primary keys and moving a vertex to a different namespace.
 
-#### Usage
-```javascript
-Appbase.rename(old,new)
-```
- - **old** `String/Appbase Reference` - old '/namespace', or '/namespace/pk' or `Appbase Reference` poiting to '/namespace/pk'
- - **new** `String` - new '/namespace', or '/namespace/pk'
+  **Returns**
+    `Appbase Reference` - pointing to the new path, if renaming of a vertex is happening, `undefined` otherwise.
 
-The old /namespace or /namespace/pk must exist and the new one must not.
+  **Usage**
+    ``Appbase.rename(old,new)``
 
-The edges pointing to the vertex being renamed will still work.
+    - **old** `String/Appbase Reference` - old '/namespace', or '/namespace/pk' or `Appbase Reference` poiting to '/namespace/pk'
+    - **new** `String` - new '/namespace', or '/namespace/pk'
 
-#### Returns
-`Appbase Reference` - pointing to the new path, if renaming of a vertex is happening,  
-`undefined` otherwise.
+  The old /namespace or /namespace/pk must exist and the new one must not.
 
-#### Example
-```javascript
-Appbase.rename('/users', '/prisoners'); // Renaming a namespace
+  The edges pointing to the vertex being renamed will still work.
 
-Appbase.rename('/users/abc', '/users/xyz'); //Renaming the primary key
+  **Example**
 
-Appbase.rename('/users/abc', '/prisoners'); // Moving a vertex to another namespace
+  .. sourcecode:: js
 
-Appbase.rename('/users/abc', '/prisoners/pqr'); // Moving a vertex to another namespace and renaming its primary key too
+    Appbase.rename('/users', '/prisoners'); // Renaming a namespace
 
-Appbase.rename('/user/pqr/xyz','/user/abc/klm'); //Throws an error, as the path should only be up to /namespace/pk
+    Appbase.rename('/users/abc', '/users/xyz'); //Renaming the primary key
 
-Appbase.rename('/users', '/prisoners/abc'); // Throws an error, if `old` is a namespace, the `new` has to a be namespace.
+    Appbase.rename('/users/abc', '/prisoners'); // Moving a vertex to another namespace
 
-var abRef = ('/user/abc');
-var abNewRef = Appbase.rename(abRef,'/user/pqr'); //Renaming the primary key. `abRef` will now turn invalid, and listeners won't work, until a new vertex at /user/abc is created. Use `abNewRef` instead.
+    Appbase.rename('/users/abc', '/prisoners/pqr'); // Moving a vertex to another namespace and renaming its primary key too
 
-var prisonerRef = Appbase.rename(abNewRef,'/prisoner'); // Moving a vertex to another namespace.
-```
+    Appbase.rename('/user/pqr/xyz','/user/abc/klm'); //Throws an error, as the path should only be up to /namespace/pk
+
+    Appbase.rename('/users', '/prisoners/abc'); // Throws an error, if `old` is a namespace, the `new` has to a be namespace.
+
+    var abRef = ('/user/abc');
+    var abNewRef = Appbase.rename(abRef,'/user/pqr'); //Renaming the primary key. `abRef` will now turn invalid, and listeners won't work, until a new vertex at /user/abc is created. Use `abNewRef` instead.
+
+    var prisonerRef = Appbase.rename(abNewRef,'/prisoner'); // Moving a vertex to another namespace.
 
 
   [1]: http://appbase.io/docs-overview
