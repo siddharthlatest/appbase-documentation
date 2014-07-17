@@ -34,8 +34,8 @@ $(function() {
   // original margin-left of the bodywrapper and width of the sidebar
   // with the sidebar expanded
   bodywrapper.css('margin-left', '350px');
+  bodywrapper.css('padding-right', '20px');
   var bw_margin_expanded = bodywrapper.css('margin-left');
-  console.log('bw_margin_expanded: ' + bw_margin_expanded);
   var ssb_width_expanded = sidebar.width();
 
   // margin-left of the bodywrapper and width of the sidebar
@@ -122,7 +122,7 @@ $(function() {
     sidebarbutton.attr('title', _('Collapse sidebar'));
     sidebarbutton.css({
         'border-radius': '0 5px 5px 0',
-        'color': '#444444',
+        'color': '#EFEFEF',
         'background-color': '#3991D0',
         'font-size': '1.2em',
         'cursor': 'pointer',

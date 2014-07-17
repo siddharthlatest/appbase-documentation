@@ -1,7 +1,7 @@
 @import url("default.css");
 
 body {
-    background-color: white;
+    background-color: #efefef;
     margin-left: 5em;
     margin-right: 5em;
 }
@@ -23,7 +23,6 @@ div.related:first-child {
 }
 
 div.sphinxsidebar {
-    background-color: #eeeeee;
     border-radius: 5px;
     line-height: 130%;
     font-size: normal;
