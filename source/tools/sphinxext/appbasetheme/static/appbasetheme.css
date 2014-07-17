@@ -67,6 +67,7 @@ div.body {
 
 div.body p {
     line-height: 140%;
+    margin-bottom: 2px;
 }
 
 div.body h1, div.body h2, div.body h3, div.body h4, div.body h5, div.body h6 {
