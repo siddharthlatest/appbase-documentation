@@ -18,9 +18,10 @@ https://github.com/sids-aquarius/appbase
      - **tools/sphinxext**    *sphinx related styling*
          - **appbasetheme** *Theme configuration*
          - **static** *static assets*
-         - <u>indexcontent.html</u> - *Main page*
+         - <u>indexcontent.html</u> - *HTML template mapped to master document*
          - <u>layout.html</u>      - *Header and footer elements*
      - <u>conf.py</u> - Main sphinx configuration file
+     - <u>index.txt</u> - Master document (main toc)
    
 HTML Build instructions
 ------------------
