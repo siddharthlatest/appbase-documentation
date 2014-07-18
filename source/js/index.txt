@@ -15,7 +15,7 @@ Brief Overview
 
 The Appbase data model is represented as a graph. Vertices are used for storing and retrieving primitive data, and linked to other vertices using edges.
 
-* **Graph** - The Appbase data model is represented a graph. Read more about it in the overview [here][1].
+* **Graph** - The Appbase data model is represented a graph. Read more about it in the overview document `here <../overview/index.html>`_.
 * **Vertex** - Data in Appbase is stored in vertices using the methods `properties.add()` and `properties.commit()`. Vertices are linked to other vertices using either *named edges*  or *ordered edges*.
     - **Named edge** - Named edge allows referencing the successor (head) vertices using distinct labels.
     - **Ordered edge** - Ordered edge allows referencing the successor (head) vertices using priorities.
@@ -637,7 +637,7 @@ modified and will never change. To modify data, use an Appbase
 reference.
 
 Snapshot Methods
-~~~~~~~~~~~~~~~~
+----------------
 
 +--------------------+---------------------------------------------------------------------+
 | Method             | Returns                                                             |
@@ -654,6 +654,7 @@ Snapshot Methods
 +--------------------+---------------------------------------------------------------------+
 | prevIndex()        | the previous index of this vertex in the current path               |
 +--------------------+---------------------------------------------------------------------+
+
 The following table shows what exact data would be returned by the
 methods in different kind of events.
 
@@ -720,6 +721,3 @@ These methods shouldn't be a necessity in the normal application working. The us
     var abNewRef = Appbase.rename(abRef,'/user/pqr'); //Renaming the primary key. `abRef` will now turn invalid, and listeners won't work, until a new vertex at /user/abc is created. Use `abNewRef` instead.
 
     var prisonerRef = Appbase.rename(abNewRef,'/prisoner'); // Moving a vertex to another namespace.
-
-
-  [1]: http://appbase.io/docs-overview
