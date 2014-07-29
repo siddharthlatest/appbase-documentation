@@ -186,7 +186,7 @@ $(function() {
       }
       else if (curtop < wintop && curbot < winbot) {
         sidebarwrapper.css('top', $u.min([winbot - sidebar_height - offset - 20,
-                              jdocument.height() - sidebar_height - 200]));
+                              jdocument.height() - sidebar_height - 250]));
       }
     }
   }
