@@ -49,7 +49,7 @@ div.sphinxsidebar {
     width: 300px;
     margin-left: -100%;
     font-size: 16px;
-
+    background-color: #CAF7E6;
 }
 
 div.sphinxsidebar ul {
@@ -438,8 +438,35 @@ span.eqno {
 
 /* -- custom styles --------------------------------------------------------- */
 
+tt.docutils {
+    background: #bddaef !important;
+}
+
+div.body .section h3 {
+    background-color: inherit;
+}
+
+div.body .section {
+    padding-left: 5px;
+    margin-top: 10px;
+}
+
 .function-name {
     color: #2978B0;
+}
+
+.function-signature {
+    color: #666666;
+    font-size: 0.7em;
+    font-style: italic;
+}
+
+.functiondiv {
+    background-color: #CDE4F3;
+}
+
+.everything-else {
+    display: none;
 }
 
 /* -- printout stylesheet --------------------------------------------------- */

@@ -1,7 +1,7 @@
 @import url("default.css");
 
 body {
-    background-color: #efefef;
+    background-color: white;
     margin-left: 5em;
     margin-right: 5em;
 }
@@ -61,7 +61,8 @@ div.sphinxsidebar input[type=text] {
 }
 
 div.body {
-    padding: 0 0 0 1.2em;
+    padding: 0 1.2em;
+    background: white;
 }
 
 div.body p {
@@ -78,7 +79,8 @@ div.body h1, div.body h2, div.body h3, div.body h4, div.body h5, div.body h6 {
 div.body hr {
     border: 0;
     background-color: #ccc;
-    height: 1px;
+    height: 3px;
+    margin-left: 5px;
 }
 
 div.body pre {
