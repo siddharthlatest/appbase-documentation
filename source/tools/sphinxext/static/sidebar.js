@@ -34,7 +34,6 @@ $(function() {
   // original margin-left of the bodywrapper and width of the sidebar
   // with the sidebar expanded
   bodywrapper.css('margin-left', '350px');
-  bodywrapper.css('padding-right', '20px');
   var bw_margin_expanded = bodywrapper.css('margin-left');
   var ssb_width_expanded = sidebar.width();
 
@@ -191,5 +190,9 @@ $(function() {
       }
     }
   }
+
+  adjust_sidebar_contents=scroll_sidebar;
   jwindow.scroll(scroll_sidebar);
 });
+
+var adjust_sidebar_contents;
