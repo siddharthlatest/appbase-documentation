@@ -8,12 +8,17 @@ $(document).ready(function() {
 	$(".section").on("click", function(event) {
 		var more_content = $(event.currentTarget).find(".everything-else");
 		if (more_content.css("display") === "none") {
-			$(event.currentTarget).find(".everything-else").css("display","block");
-			$(event.currentTarget).css("background-color","#EFF6FB");
+			if ($(event.currentTarget).children().filter("blockquote").length === 1) {
+				console.log($(event.currentTarget).find(".everything-else"));
+				$(event.currentTarget).find(".everything-else").css("display","block");
+				$(event.currentTarget).css("background-color","#EFF6FB");
+			}
 		}
 		else {
-			$(event.currentTarget).find(".everything-else").css("display","none");
-			$(event.currentTarget).css("background-color","#EFEFEF");
+			if ($(event.currentTarget).children().filter("blockquote").length === 1) {
+				$(event.currentTarget).find(".everything-else").css("display","none");
+				$(event.currentTarget).css("background-color","#EFEFEF");
+			}
 		}
 		$(".sphinxsidebar").css("height", $('.bodywrapper').height());
 		$("#sidebarbutton").css("height", $('.bodywrapper').height());
