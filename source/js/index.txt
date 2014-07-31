@@ -1,5 +1,8 @@
 .. role:: function-name
+.. role:: function-name-danger
 .. role:: function-signature
+.. role:: text-note
+.. role:: null-effect
 
 **********************
 Appbase Javascript API
@@ -14,73 +17,71 @@ Appbase Javascript API
 Brief Overview
 ==============
 
-The Appbase data model is represented as a graph. Vertices are used for storing and retrieving primitive data, and linked to other vertices using edges. Read more about it in the overview document `here <../overview/index.html>`_.
+.. raw:: html
+
+  <p>
+    The Appbase data model is represented as a graph. Vertices are used for storing and retrieving primitive data, and linked to other vertices using edges. Read more about it in the <strong><a href="../overview/index.html">overview document</a></strong>.
+  </p>
+  <h3 class="null-effect" style="margin-top:20px;">Appbase Datatypes</h3>
+  <h4>Primitive</h4>
+    <ul>
+      <li>Boolean</li>
+      <li>Number</li>
+      <li>String</li>
+    </ul>
+  <h4>Objects</h4>
+    <ul>
+      <li>
+        <dt>Appbase Reference</dt>
+        <dd>Reference to a vertex on a given <em>Appbase path</em>.</dd>
+      </li>
+      <li>
+        <dt>Vertex Snapshot</dt>
+      </li>
+    </ul>
 
 | 
-
-Appbase Datatypes
------------------
-
-Primitive
-~~~~~~~~~
-* Number
-* String
-
-Objects
-~~~~~~~
-* Vertex Reference
-* Vertex Snapshot
-
-| 
-
----------------------
 
 Appbase Object
 ==============
 
-``Appbase`` is the only global object exposed to the global Javascript namespace.
+----
 
-.. index:: Appbase.new()
+**Appbase** is the global object exposed to the Javascript namespace. It has two methods ``create()`` and ``ref()``.
 
-:function-name:`Appbase.new()` :function-signature:`Appbase.new(namespace, [key])`
-----------------------------------------------------------------------------------
+.. index:: Appbase.create()
+
+:function-name:`Appbase.create()` :function-signature:`Appbase.create(namespace, [key])`
+----------------------------------------------------------------------------------------
 
   .. raw:: html
 
-    <div id="appbase-new" class="foobar">
+    <div id="appbase-create" class="foobar">
 
   .. container:: definition
 
-    Creates a new **vertex** under a *namespace*.
+    Create a new Appbase **vertex**.
 
   .. container:: returns
 
     **Returns**
-      *Vertex Reference*
+      *Appbase Reference* of the created vertex.
 
   .. container:: everything-else
 
     **Usage**
-      ``Appbase.new(namespace,[key])``
+      ``Appbase.create(namespace,[key])``
 
-      - **namespace** ``String`` Namespace key
-      - **key** *(optional)* ``String`` Key given to the new vertex
+      - **namespace** ``String`` A namespace identifier, a new namespace is created if one does not already exist.
+      - **key** *(optional)* ``String`` Vertex identifier, has to be unique in a namespace. A unique identifier is generated if not provided.
 
-    The *namespace* is automatically created if it does not already exist.
-
-    A unique *key* can be given to the vertex. Otherwise, a unique key will be generated automatically. The key should not contain any whitespace and '/' character.
+      :text-note:`Note` *key* cannot contain any whitespace, '~' or '/' characters.
 
     **Example**
 
     .. sourcecode:: js
 
-      var vref = Appbase.new('prisoner', 'andy_dufresne', function(error) {
-          if (!error) {
-              console.log('Vertex created.')
-          } else {
-              console.log('The vertex already exists.')
-          }
-      );
+      var abref = Appbase.create('prisoner', 'andy_dufresne');
 
   .. raw:: html
 
@@ -90,8 +91,8 @@ Appbase Object
 
 .. index:: Appbase.ref()
 
-:function-name:`Appbase.ref()` :function-signature:`Appbase.ref(path)`
------------------------------------------------------------------------
+:function-name:`Appbase.ref()` :function-signature:`Appbase.ref(URL)`
+---------------------------------------------------------------------
 
   .. raw:: html
 
@@ -99,80 +100,50 @@ Appbase Object
 
   .. container:: definition
 
-    A *Vertex Reference* allows operating on a vertex stored in *Appbase* at some path. This method creates a reference pointing to a path.
+    Reference to an *existing vertex* from the Appbase URL.
 
   .. container:: returns
 
-    **Returns**
-      ``Vertex Reference`` - pointing to the vertex located at the given path.
+    **Returns**   
+      `Appbase Reference` of the vertex.
 
   .. container:: everything-else
 
     **Usage**
-      ``Appbase.ref(path)``
+      ``Appbase.ref(URL)``
 
-      | **path** ``String`` - path to the vertex in Appbase
-
-    A *Path* in Appbase consists of one or more linked vertices with the endpoint always being a vertex. '/' is used to demarcate between consequent vertices. The *base-url* is a unique string for the Application, and the first element after the url represents a namespace, and following elements are objects.
-
+      | **URL** ``String`` Appbase URL of the vertex
 
     **Example**
 
     .. sourcecode:: js
 
-      var vref = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy_dufresne/rock_hammer');
+      var abref = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy_dufresne/');
 
 
-    The *path*, 'https://shawshank.api.appbase.io/prisoner/andy_dufresne/rock_hammer' points to a *vertex*, which is inserted as the **edgename : 'rock_hammer'** in the *vertex* of the **namespace : 'prisoner'** with **key : andy_dufresne**. The application's *base url* is **https://shawshank.api.appbase.io**.
+    The *URL*, 'https://shawshank.api.appbase.io/prisoner/andy_dufresne/' points to a *vertex* in the namespace ``prisoner`` with key ``andy_dufresne``. **https://shawshank.api.appbase.io** is the app's base URL.
 
   .. raw:: html
 
     </div>
-    
+
 |
+
+.. index:: Appbase Reference
+
+Appbase Reference
+=================
 
 -----
 
-Vertex Reference
-=================
-
-Operations, such as read/write on vertex, located at a path can be done using a **Vertex Reference**.
+**Appbase Reference** allows operations related to reading, writing and modifying the graph. Each of these methods return a *Appbase Reference* to allow chaining of different methods.
 
 |
 
-.. index:: path()
+.. index:: setData()
 
-:function-name:`path()` :function-signature:`path()`
-----------------------------------------------------
-
-  .. raw:: html
-
-    <div id="appbase-path" class="foobar">
-
-  .. container:: definition
-
-    To know what path this reference points to.
-
-  .. container:: returns
-
-    **Returns**
-      ``String`` - The path
-
-  .. container:: everything-else
-
-    **Usage**
-      ``vref.path()``
-
-  .. raw:: html
-
-    </div>
-
-|
-
-.. index:: set_property()
-
-:function-name:`set_property()` :function-signature:`set_property(name, val, [callback])`
------------------------------------------------------------------------------------------
+:function-name:`.setData()` :function-signature:`setData(name, val, [callback])`
+--------------------------------------------------------------------------------
 
   .. raw:: html
 
@@ -180,24 +151,22 @@ Operations, such as read/write on vertex, located at a path can be done using a 
 
   .. container:: definition
 
-    Set a vertex property and give it a value, or set a value for an existing property.
-
-  .. container:: returns
-
-    **Returns**
-      `Vertex Reference` - pointing to the same path where the method is called. This allows chaining of methods.
+    Set data property to this Appbase location.
 
   .. container:: everything-else
 
     **Usage**
-      ``vref.set_property(name,val,[callback])``
+      ``abref.setData(name, val, [callback])``
 
-      - **name** `String` - property name
-      - **value** `String/Number` - value
-      - **callback** `Function` - will be passed these as arguments:
-          - **error** `Boolean/String`
-          - **vref** `Vertex Reference` - points to the same path on which the method is called
+      - **name** ``String`` Property name
+      - **value** ``String``/``Number`` value
+      - **callback** ``Function`` will be passed with these as arguments:
+          - **error** `String`
+          - **abref** `Appbase Reference` - points to the same path on which the method is called
           - **snapObj** `Vertex Snapshot` - Snapshot of the new data stored in the vertex.
+
+    **Returns**
+      `Appbase Reference` of the vertex at current location.
 
   .. raw:: html 
 
@@ -205,10 +174,10 @@ Operations, such as read/write on vertex, located at a path can be done using a 
 
 |
 
-.. index:: commit_property()
+.. index:: commitData()
 
-:function-name:`commit_property()` :function-signature:`commit_property(property, apply, [callback])`
------------------------------------------------------------------------------------------------------
+:function-name:`.commitData()` :function-signature:`commitData(name, apply, [callback])`
+-------------------------------------------------------------------------------------------
 
   .. raw:: html
 
@@ -216,26 +185,23 @@ Operations, such as read/write on vertex, located at a path can be done using a 
 
   .. container:: definition
 
-    A strongly consistent *set* operation. It allows you create consistent aggregators, such as counters.
-
-  .. container:: returns
-
-    **Returns**
-      `Vertex Reference` - pointing to the same path where the method is called. This allows chaining of methods.
+    Set data property to this Appbase location consistently.
 
   .. container:: everything-else
 
     **Usage**
-      ``vref.commit_property(property, apply, [callback])``
+      ``abref.commitData(name, apply, [callback])``
 
-      - **property** `String`
-      - **apply** `function` - The function should return which returns String/Number. The old value is passed in as an argument to the function
-      - **callback** `Function` - will be passed these as arguments:
-          - **error** `Boolean/String`
-          - **vref** `Vertex Reference` - points to the same path on which the method is called
-          - **snapObj** `Vertex Snapshot` - Snapshot of the new data stored in the vertex.
-          - **isCommitted** `Boolean` - Whether the final value is committed or is still the new data returned from the server 
+      - **name** ``String`` Property name
+      - **apply** ``Function`` The function should return a String or a Number. The old value is passed in as an argument to the function.
+      - **callback** ``Function`` will be passed these arguments:
+          - **error** `String`
+          - **abref** `Appbase Reference` of the vertex at the current location
+          - **snapObj** `Vertex Snapshot` Snapshot of the new data stored in the vertex
+          - **isCommitted** `Boolean` ``true`` if the final final value has been committed
   
+    **Returns**
+      `Appbase Reference` of the vertex at current location.
 
     **Example**
 
@@ -243,7 +209,7 @@ Operations, such as read/write on vertex, located at a path can be done using a 
 
       var toolRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy_dufresne/rock_hammer');
 
-      toolRef.properties.commit('size',function(prevSize) {
+      toolRef.commitData('size',function(prevSize) {
         return prevSize + 1;
       });
 
@@ -255,9 +221,9 @@ Operations, such as read/write on vertex, located at a path can be done using a 
 
 |
 
-.. index:: remove_property()
+.. index:: removeData()
 
-:function-name:`remove_property()` :function-signature:`remove_property(prop, [callback])`
+:function-name:`.removeData()` :function-signature:`removeData(name, [callback])`
 ------------------------------------------------------------------------------------------
 
   .. raw:: html
@@ -266,23 +232,21 @@ Operations, such as read/write on vertex, located at a path can be done using a 
 
   .. container:: definition
 
-    Removes a property.
-
-  .. container:: returns
-
-    **Returns**
-      `Vertex Reference` - pointing to the same path where the method is called. This allows chaining of methods.
+    Remove a data property from the current location.
 
   .. container:: everything-else
 
     **Usage**
-      ``vref.properties.remove(prop,[callback])``
+      ``abref.removeData(name, [callback])``
 
-      - **prop** `String` - property name
-      - **callback** `Function` - will be passed these as arguments:
-          - **error** `Boolean/String`
-          - **vref** `Vertex Reference` - points to the same path on which the method is called
-          - **snapObj** `Vertex Snapshot` - - Snapshot of the new data stored in the vertex.
+      - **name** ``String`` Property name
+      - **callback** ``Function`` will be passed with these arguments:
+          - **error** `String`
+          - **abref** `Appbase Reference` of the vertex a the current location.
+          - **snapObj** `Vertex Snapshot` of the new data stored in the vertex.
+
+    **Returns**
+      `Appbase Reference` of the vertex at current location.
 
   .. raw:: html
 
@@ -290,10 +254,10 @@ Operations, such as read/write on vertex, located at a path can be done using a 
 
 |
 
-.. index:: set_edge()
+.. index:: setEdge()
 
-:function-name:`set_edge()` :function-signature:`set_edge(vref, edgename, [callback])`
----------------------------------------------------------------------------------------
+:function-name:`.setEdge()` :function-signature:`setEdge(dest_ref, [edgename], [order], [callback])`
+-----------------------------------------------------------------------------------------------------
 
   .. raw:: html
 
@@ -301,25 +265,26 @@ Operations, such as read/write on vertex, located at a path can be done using a 
 
   .. container:: definition
 
-    Sets/inserts a unidirectional edge to another vertex. This operation also creates a new accessible path, which can be used to create a `Vertex Reference`.
-
-  .. container:: returns
-
-    **Returns**
-      `Vertex Reference` - pointing to the same path where the method is called. This allows chaining of methods.
+    Set an edge to a specific destination vertex. It can optionally have an order.
 
   .. container:: everything-else
 
     **Usage**
-      ``vref.set_edge(vref, edgename, [callback])``
+      ``abref.setEdge(dest_ref, [edgename], [order], [callback])``
 
-      - **edgename** `String`
-      - **vref** `Vertex Reference` - The vertex where the edge would point
-      - **callback** `Function` - will be passed these as arguments:
-          - **error** `Boolean/String`
-          - **vref** `Vertex Reference` - points to the same path on which the method is called
+      - **edgename** ``String``
+      - **dest_ref** ``Appbase Reference`` of the destination vertex
+      - **callback** ``Function`` will be passed with these arguments:
+          - **error** `String`
+          - **abref** `Appbase Reference` of the vertex at current location.
 
-    For named edges, if some edge exists and points to a vertex, and now its passed as `edgename` with a `Vertex Reference` of some other vertex, the edge will be *replaced*. It is considered to be *removed* and *added* again, therefore, **edge_removed** event will be fired, followed by **edge_added** for the same edge. Take a look at the documentation of `vref.on()` for more details on the events.
+    **Returns**
+      `Appbase Reference` of the vertex at current location.
+
+    :text-note:`Consequeunces for event firing`
+
+    If the current vertex already has an edge with the provided ``edgename`` pointing to a different vertex, **setEdge** will replace the edge's out vertex to ``dest_ref``.
+    The edge is considered to be *removed* and *added* again, therefore firing an **edge_removed** event followed by an **edge_added** event.
 
 
     **Example**
@@ -329,19 +294,19 @@ Operations, such as read/write on vertex, located at a path can be done using a 
       var prisonerRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy_dufresne');
       var toolRef = Appbase.new('tool'); // new vertex of the namespace 'tool'
 
-      toolRef.properties.add('size',12);
-      prisonerRef.named_edges.add('rock_hammer',toolRef);
+      toolRef.setData('size',12);
+      prisonerRef.setEdge('rock_hammer',toolRef);
 
       /* Now Dufresne's rock hammer can be accessed directly with 
-       * the path: 'https://shawshank.api.appbase.io/prisoner/andy*dufresne/rock*hammer'
+       * the path: 'https://shawshank.api.appbase.io/prisoner/andy_dufresne/rock_hammer'
        */
 
 |
 
-.. index:: remove_edge()
+.. index:: removeEdge()
 
-:function-name:`remove_edge()` :function-signature:`remove_edge(name, [callback])`
-----------------------------------------------------------------------------------
+:function-name:`.removeEdge()` :function-signature:`removeEdge(edgename, [callback])`
+-------------------------------------------------------------------------------------
 
   .. raw:: html
 
@@ -349,29 +314,27 @@ Operations, such as read/write on vertex, located at a path can be done using a 
 
   .. container:: definition
 
-    Removes an edge.
-
-  .. container:: returns
-
-    **Returns**
-      `Vertex Reference` - pointing to the same path where the method is called. This allows chaining of methods.
+    Removes an outgoing edge from the vertex at the current location.
 
   .. container:: everything-else
 
     **Usage**
-      ``vref.remove_edge(name, [callback])``
+      ``abref.remove_edge(name, [callback])``
 
       - **name** `String` - named edges
       - **callback** `Function` - will be passed these as arguments:
           - **error** `Boolean/String`
-          - **vref** `Vertex Reference` - points to the same path on which the method is called
+          - **abref** `Appbase Reference` - points to the same path on which the method is called
+
+    **Returns**
+      `Appbase Reference` of the vertex at current location.
 
 |
 
 .. index:: delete()
 
-:function-name:`delete()` :function-signature:`delete([callback])`
-------------------------------------------------------------------
+:function-name-danger:`.delete()` :function-signature:`delete([callback])`
+--------------------------------------------------------------------------
 
   .. raw:: html
 
@@ -379,29 +342,58 @@ Operations, such as read/write on vertex, located at a path can be done using a 
 
   .. container:: definition
 
-    Deletes the vertex, edges to this vertex in other vertexes will be removed as well.
+    Delete the vertex, it's associated data and the connecting edges from the current location.
 
   .. container:: returns
 
     **Returns**
-      ``Boolean`` - *true* if successful
+      ``Boolean`` *true* if successful
 
   .. container:: everything-else
 
     **Usage**
-      ``vref.delete([callback])``
+      ``abref.delete([callback])``
 
-      - **callback** `Function` - will be passed these as arguments:
+      - **callback** ``Function`` will be passed with these arguments:
           - **error** `Boolean/String`
 
-    The Vertex Reference now turns invalid and listeners won't fire. Any data modification operation will fail.
+    The Appbase Reference now turns invalid and the listeners will not fire. Consequently, any data modification operations will fail.
 
 |
 
-.. index:: out_vertex()
+.. index:: url()
 
-:function-name:`out_vertex()` :function-signature:`out_vertex(name)`
---------------------------------------------------------------------
+:function-name:`.url()` :function-signature:`url()`
+-----------------------------------------------------
+
+  .. raw:: html
+
+    <div id="appbase-path" class="foobar">
+
+  .. container:: definition
+
+    Appbase URL of the current reference.
+
+  .. container:: returns
+
+    **Returns**
+      ``String`` AppbaseURL
+
+  .. container:: everything-else
+
+    **Usage**
+      ``abref.path()``
+
+  .. raw:: html
+
+    </div>
+
+|
+
+.. index:: outVertex()
+
+:function-name:`.outVertex()` :function-signature:`outVertex(name)`
+------------------------------------------------------------------
 
   .. raw:: html
 
@@ -414,12 +406,12 @@ Operations, such as read/write on vertex, located at a path can be done using a 
   .. container:: returns
 
     **Returns**
-      `Vertex Reference` of the corresponding ``out_vertex``
+      `Appbase Reference` of the corresponding `out vertex`
 
   .. container:: everything-else
 
     **Usage**
-      ``vref.out_vertex(name)``
+      ``abref.outVertex(name)``
 
     
 
@@ -428,7 +420,7 @@ Operations, such as read/write on vertex, located at a path can be done using a 
     .. sourcecode:: js
 
       var prisonerRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy_dufresne');
-      var toolRef = prisonerRef.out_vertex('rock_hammer');
+      var toolRef = prisonerRef.outVertex('rock_hammer');
 
       /* `toolRef` points to the the path:
        * 'https://shawshank.api.appbase.io/prisoner/andy_dufresne/rock_hammer'
@@ -440,10 +432,10 @@ Operations, such as read/write on vertex, located at a path can be done using a 
 
 |
 
-.. index:: in_vertex()
+.. index:: inVertex()
 
-:function-name:`in_vertex()` :function-signature:`in_vertex()`
---------------------------------------------------------------
+:function-name:`.inVertex()` :function-signature:`inVertex()`
+------------------------------------------------------------
 
   .. raw:: html
 
@@ -456,14 +448,14 @@ Operations, such as read/write on vertex, located at a path can be done using a 
   .. container:: returns
 
     **Returns**
-      `Vertex Reference` of the ``in_vertex``
+      `Appbase Reference` of the `in vertex`
 
   .. container:: everything-else
 
     **Usage**
-      ``vref.in_vertex()``
+      ``abref.inVertex()``
 
-    Throws an error if ``vref`` does not have an **in vertex**.
+    Throws an error if ``abref`` does not have an **in vertex**.
 
     **Example**
 
@@ -484,10 +476,10 @@ Operations, such as read/write on vertex, located at a path can be done using a 
 
 |
 
-----
-
 Data Listeners
 ==============
+
+----
 
 .. index:: on('properties')
 
@@ -510,12 +502,12 @@ Data Listeners
   .. container:: everything-else
 
     **Usage**
-      ``vref.on('properties', [listener_name], callback)``
+      ``abref.on('properties', [listener_name], callback)``
 
       - **listener_name** *(Optional)* `String` - Identifier for the listener.
       - **callback** `Function` - will be passed these as arguments:
           - **error** `Boolean/String`
-          - **vref** `Vertex Reference` - points to the path on which the event is fired
+          - **abref** `Appbase Reference` - points to the path on which the event is fired
           - **snapObj** `Vertex Snapshot` - Snapshot of the data stored in the vertex. Take a look at the documentation of `Vertex Snapshot`
 
     `listener_name` is a unique string, which can be used later on to turn this listener off using `offWithName(listener_name)`. This is a way to keep track of listeners. If a `listener_name` is given again with a different callback function, the old callback function is replaced, and will no longer be called when the event is fired, instead the new function will be called. If no `listener_name` is given, a unique string will be generated as the listener's name and returned.
@@ -568,7 +560,7 @@ Data Listeners
   .. container:: everything-else
 
     **Usage**
-      ``vref.on('edge_added', edgetype, [listener_name], [options], callback)``
+      ``abref.on('edge_added', edgetype, [listener_name], [options], callback)``
 
       - **edgetype** `String` - 'ordered' or 'named'
       - **listener_name** *(Optional)* `String` - Name given to the listener. For details, take a look at the documentation of `on('properties')`
@@ -580,7 +572,7 @@ Data Listeners
           - **noData** `Boolean` - Whether to include the data stored at the vertex where the edge points 
       - **callback** `Function` - will be passed these as arguments:
           - **error** `Boolean/String`
-          - **vref** `Vertex Reference` - pointing to path of the edge
+          - **abref** `Appbase Reference` - pointing to path of the edge
           - **[snapObj]** `Vertex Snapshot` - Snapshot of the data stored in the vertex, where the edge points. Take a look at the documentation of `Vertex Snapshot`
 
     `snapObj` will not be passed if `{noData: true}` is passed as the options to the listener.
@@ -639,13 +631,13 @@ Data Listeners
   .. container:: everything-else
 
     **Usage**
-      ``vref.on('edge_removed', edgetype, [listener_name], callback)``
+      ``abref.on('edge_removed', edgetype, [listener_name], callback)``
 
       - **edgetype** `String` - 'ordered' or 'named'
       - **listener_name** *(Optional)* `String` - Name given to the listener. For details, take a look at the documentation of `on('properties')`.
       - **callback** `Function` - will be passed these as arguments:
           - **error** `Boolean/String`
-          - **vref** `Vertex Reference` - pointing to path of the edge
+          - **abref** `Appbase Reference` - pointing to path of the edge
           - **snapObj** `Vertex Snapshot` - Snapshot of the data stored in the vertex, where the edge used to point. Take a look at the documentation of `Vertex Snapshot`
 
   .. raw:: html
@@ -675,13 +667,13 @@ Data Listeners
   .. container:: everything-else
 
     **Usage**
-      ``vref.on('edge_changed', edgetype, [listener_name], callback)``
+      ``abref.on('edge_changed', edgetype, [listener_name], callback)``
 
     - **edgetype** `String` - 'ordered' or 'named'
     - **listener_name** *(Optional)* `String` - Name given to the listener. For details, take a look at the documentation of `on('properties')`.
     - **callback** `Function` - will be passed these as arguments:
         - **error** `Boolean/String`
-        - **vref** `Vertex Reference` - pointing to path of the edge
+        - **abref** `Appbase Reference` - pointing to path of the edge
         - **snapObj** `Vertex Snapshot` - Snapshot of the data stored in the vertex, where the edge points. Take a look at the documentation of `Vertex Snapshot`
 
     For this event to fire, in the background the vertexes pointed by all the edges are listened for **properties** event, and this would be a costly operation in terms of bandwidth if there are a huge number of edges.
@@ -733,7 +725,7 @@ Data Listeners
     TODO: only on ordered edges
     This event is fired, when the order of an edge is changed. 
 
-    When the order of an edge is manually changed by calling `vref.edges.add()` on an existing edge, also the other edges are moved, either they are shifted upward or downward by '1' in the order. This event is fired for all the edges, moved manually or automatically.
+    When the order of an edge is manually changed by calling `abref.edges.add()` on an existing edge, also the other edges are moved, either they are shifted upward or downward by '1' in the order. This event is fired for all the edges, moved manually or automatically.
 
   .. container:: returns
 
@@ -743,13 +735,13 @@ Data Listeners
   .. container:: everything-else
 
     **Usage**
-      ``vref.on('edge_moved', [listener_name], callback)``
+      ``abref.on('edge_moved', [listener_name], callback)``
 
       - **listener_name** *(Optional)* `String` - Name given to the listener. For details, take a look at the documentation of `on('properties')`.
       - **listenDepth** `Number` - The depth of edges up to which listen for data changes. Default value is `0`, meaning no listening on the properties.
       - **callback** `Function` - will be passed these as arguments:
           - **error** `Boolean/String`
-          - **vref** `Vertex Reference` - pointing to path of the edge
+          - **abref** `Appbase Reference` - pointing to path of the edge
           - **snapObj** `Vertex Snapshot` - Snapshot of the data stored in the vertex, where the edge points. Take a look at the documentation of `Vertex Snapshot`
  
   .. raw:: html
@@ -779,7 +771,7 @@ Data Listeners
   .. container:: everything-else
 
     **Usage**
-      ``vref.off([event])``
+      ``abref.off([event])``
 
       - **event** *(optional)* `String` - All the listeners on this event, will be turned off. If no event is given, all the listeners on all the events will be turned off.
 
@@ -811,11 +803,10 @@ Data Listeners
 
 |
 
--------------------
-
-
 Vertex Snapshot
 ===============
+
+-------------------
 
 *Vertex Snapshot* is an immutable copy of the data at a location in
 *Appbase*. It is passed to callbacks in all event firing. It can’t be
@@ -855,71 +846,5 @@ methods in different kind of events.
 +--------------------+------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------+------------------------------------------------------------------+------------------------------------------------------------------------+----------------------------------------------------+
 | prevIndex()        | same as **index()**                                                                                                                      | **null**                                           | **index** of **the edge being deleted**                          | same as **index()**                                                    | **previous** index of **the edge**                 |
 +--------------------+------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------+------------------------------------------------------------------+------------------------------------------------------------------------+----------------------------------------------------+
-
-|
-
----------------------
-
-Privileged Methods
-==================
-
-These methods shouldn't be a necessity in the normal application working. The use of these methods can be controlled via security rules.
-
-|
-
-.. index:: Appbase.rename()
-
-:function-name:`Appbase.rename()` :function-signature:`Appbase.rename()`
-------------------------------------------------------------------------
-
-  .. raw:: html
-
-    <div id="appbase-rename" class="foobar">
-
-  .. container:: definition
-
-    Allows renaming of namespaces, vertex primary keys and moving a vertex to a different namespace.
-
-  .. container:: returns
-
-    **Returns**
-      `Vertex Reference` - pointing to the new path, if renaming of a vertex is happening, `undefined` otherwise.
-
-  .. container:: everything-else
-
-    **Usage**
-      ``Appbase.rename(old,new)``
-
-      - **old** `String/Vertex Reference` - old '/namespace', or '/namespace/pk' or `Vertex Reference` poiting to '/namespace/pk'
-      - **new** `String` - new '/namespace', or '/namespace/pk'
-
-    The old /namespace or /namespace/pk must exist and the new one must not.
-
-    The edges pointing to the vertex being renamed will still work.
-
-    **Example**
-
-    .. sourcecode:: js
-
-      Appbase.rename('/users', '/prisoners'); // Renaming a namespace
-
-      Appbase.rename('/users/abc', '/users/xyz'); //Renaming the primary key
-
-      Appbase.rename('/users/abc', '/prisoners'); // Moving a vertex to another namespace
-
-      Appbase.rename('/users/abc', '/prisoners/pqr'); // Moving a vertex to another namespace and renaming its primary key too
-
-      Appbase.rename('/user/pqr/xyz','/user/abc/klm'); //Throws an error, as the path should only be up to /namespace/pk
-
-      Appbase.rename('/users', '/prisoners/abc'); // Throws an error, if `old` is a namespace, the `new` has to a be namespace.
-
-      var vref = ('/user/abc');
-      var abNewRef = Appbase.rename(vref,'/user/pqr'); //Renaming the primary key. `vref` will now turn invalid, and listeners won't work, until a new vertex at /user/abc is created. Use `abNewRef` instead.
-
-      var prisonerRef = Appbase.rename(abNewRef,'/prisoner'); // Moving a vertex to another namespace.
-
-  .. raw:: html
-
-    </div></div>
 
 |

@@ -2,22 +2,28 @@ $(document).ready(function() {
 	$(".everything-else").css("display","none");
 	$(".everything-else").each(function(id, obj) {
 		var parent_div = $($(obj).parents(".section")[0]);
-		parent_div.css("background-color","#EFEFEF");
+		// styling for code reference divs
+		parent_div.css({
+			"background-color":"#FEFEFE",
+			"border-radius":"5px",
+			"box-shadow":"0 1px 3px rgba(0,0,0,.15)",
+			"margin-bottom":"40px"
+		});
+
 	});
+	$(".sphinxsidebar").css("height", $('.bodywrapper').height());
+	$("#sidebarbutton").css("height", $('.bodywrapper').height());
 	
 	$(".section").on("click", function(event) {
 		var more_content = $(event.currentTarget).find(".everything-else");
 		if (more_content.css("display") === "none") {
 			if ($(event.currentTarget).children().filter("blockquote").length === 1) {
-				console.log($(event.currentTarget).find(".everything-else"));
 				$(event.currentTarget).find(".everything-else").css("display","block");
-				$(event.currentTarget).css("background-color","#EFF6FB");
 			}
 		}
 		else {
 			if ($(event.currentTarget).children().filter("blockquote").length === 1) {
 				$(event.currentTarget).find(".everything-else").css("display","none");
-				$(event.currentTarget).css("background-color","#EFEFEF");
 			}
 		}
 		$(".sphinxsidebar").css("height", $('.bodywrapper').height());
