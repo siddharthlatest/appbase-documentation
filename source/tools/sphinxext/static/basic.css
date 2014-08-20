@@ -118,6 +118,7 @@ table.contentstable {
 
 table.contentstable p.biglink {
     line-height: 150%;
+    margin: 1em;
 }
 
 table.contentstable .reference {
@@ -481,6 +482,17 @@ div.body .section {
     border-radius: 2px;
     padding: 1px;
     font-style: bold;
+}
+
+.section-header {
+    font-size: 1em;
+    font-style: bold;
+    font-size: 140%;
+}
+
+.hyperlink-underline {
+    border-bottom: 2px solid #2978B0;
+    color: #676767;
 }
 
 .functiondiv {
