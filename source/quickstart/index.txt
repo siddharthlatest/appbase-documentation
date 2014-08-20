@@ -1,2 +1,60 @@
 Javascript Quickstart
 =====================
+
+
+Steps to getting started with Appbase
+-------------------------------------
+
+1. Add Appbase library to your codebase and set the app credentials as they appear here.
+
+	.. sourcecode:: html
+
+	  <script src="cdn.appbase.io/appbase.js"></script>
+
+	.. sourcecode:: js
+
+	  Appbase.credentials('aphrodite', '4d8d0072580912343cd74aa0015cd217')
+
+
+2. Now let's create two Appbase references under namespaces "user" and "tweets".
+
+	.. sourcecode:: js
+
+	  var userRef = Appbase.create("user", "lara")
+	  var tweetRef = Appbase.create("tweet")
+
+	As seen here, one can optionally specify the reference name.
+
+
+3. Now we will set some data on these references.
+
+	.. sourcecode:: js
+
+	  userRef.setData({
+	    status: "sudo",
+	    location: "Belo Horizonte, Brazil"
+	  });
+	  tweetRef.setData({
+	    message: "Remember Red, hope is a good thing."
+	  });
+
+4. Now let's add the tweet as an edge to our user reference.
+
+	.. sourcecode:: js
+
+	  userRef.setEdge(tweetRef, 'tweeted')
+
+5. Go real-time! Listen to the changes on the user reference data properties and edges, to see the changes we have made so far.
+
+	.. sourcecode:: js
+
+		userRef.on('properties', function(error, ref, userSnap) {
+		    console.log(userSnap.properties().status)
+		    console.log(userSnap.properties().location)
+		})
+
+		userRef.on('edge_added', function(error, edgeRef, eSnap) {
+			edgeRef.on('properties', function(error, ref, tweetSnap) {
+			    console.log(tweetSnap.properties().message)
+			})
+		})
