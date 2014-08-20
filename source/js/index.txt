@@ -3,6 +3,8 @@
 .. role:: function-signature
 .. role:: text-note
 .. role:: null-effect
+.. role:: section-header
+.. role:: hyperlink-underline
 
 **********************
 Appbase Javascript API
@@ -45,9 +47,54 @@ Brief Overview
 Appbase Object
 ==============
 
+
 ----
 
-**Appbase** is the global object exposed to the Javascript namespace. It has two methods ``create()`` and ``ref()``.
+**Appbase** is the global object exposed to the Javascript namespace. It has three methods ``credentials()``, ``create()``, ``ref()`` and ``search()``.
+
+|
+
+.. index:: Appbase.appCredentials()
+
+:function-name:`Appbase.credentials()` :function-signature:`Appbase.credentials(appname, appsecret)`
+-----------------------------------------------------------------------------------------------------
+
+  .. raw:: html
+
+    <div id="appbase-credentials" class="foobar">
+
+  .. container:: definition
+
+    Authorize the app credentials using the `name` and `secret` identifiers, as they appear in the developer console.
+
+  .. container:: returns
+
+    **Returns**
+      *boolean* ``true`` if the app is successfully registered.
+
+  .. container:: everything-else
+
+    **Usage**
+      ``Appbase.credentials(appname, appsecret)``
+
+      - **name** ``String`` --- App name
+      - **secret** ``String`` --- App secret key
+
+    The base URL of the app is ``http://*appname*.api1.appbase.io``.
+
+    **Example**
+
+    .. sourcecode:: js
+
+      var register = Appbase.app('aphrodite', '4d8d0072580912343cd74aa0015cd217');
+      if (register === true)
+        console.log("app successfully registered");
+
+  .. raw:: html
+
+    </div>
+
+| 
 
 .. index:: Appbase.create()
 
@@ -70,18 +117,18 @@ Appbase Object
   .. container:: everything-else
 
     **Usage**
-      ``Appbase.create(namespace,[key])``
+      ``Appbase.create(namespace, [key])``
 
-      - **namespace** ``String`` A namespace identifier, a new namespace is created if one does not already exist.
-      - **key** *(optional)* ``String`` Vertex identifier, has to be unique in a namespace. A unique identifier is generated if not provided.
+      - **namespace** ``String`` --- A namespace identifier, a new namespace is created if one does not already exist.
+      - **key** *(optional)* ``String`` --- Vertex identifier, has to be unique in a namespace. A unique identifier is generated if not provided.
 
-      :text-note:`Note` *key* cannot contain any whitespace, '~' or '/' characters.
+      :text-note:`Note` *key* can contain all ascii characters except for whitespaces, `````, ``~``, ``:`` or ``/`` characters.
 
     **Example**
 
     .. sourcecode:: js
 
-      var abref = Appbase.create('prisoner', 'andy_dufresne');
+      var abref = Appbase.create('Materials', 'Ice');
 
   .. raw:: html
 
@@ -91,8 +138,8 @@ Appbase Object
 
 .. index:: Appbase.ref()
 
-:function-name:`Appbase.ref()` :function-signature:`Appbase.ref(URL)`
----------------------------------------------------------------------
+:function-name:`Appbase.ref()` :function-signature:`Appbase.ref(path)`
+----------------------------------------------------------------------
 
   .. raw:: html
 
@@ -110,18 +157,18 @@ Appbase Object
   .. container:: everything-else
 
     **Usage**
-      ``Appbase.ref(URL)``
+      ``Appbase.ref(path)``
 
-      | **URL** ``String`` Appbase URL of the vertex
+      | **path** ``String`` Appbase path of the vertex
 
     **Example**
 
     .. sourcecode:: js
 
-      var abref = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy_dufresne/');
+      var abref = Appbase.ref('Materials/Ice/');
 
 
-    The *URL*, 'https://shawshank.api.appbase.io/prisoner/andy_dufresne/' points to a *vertex* in the namespace ``prisoner`` with key ``andy_dufresne``. **https://shawshank.api.appbase.io** is the app's base URL.
+    An *appbase path* is very similar to a UNIX path. Here, we are fetching the vertex ``Ice`` that we just created under the namespace ``Materials``.
 
   .. raw:: html
 
@@ -136,14 +183,14 @@ Appbase Reference
 
 -----
 
-**Appbase Reference** allows operations related to reading, writing and modifying the graph. Each of these methods return a *Appbase Reference* to allow chaining of different methods.
+**Appbase Reference** has methods for writing, and reading (listening) on the Appbase graph.
 
 |
 
 .. index:: setData()
 
-:function-name:`.setData()` :function-signature:`setData(name, val, [callback])`
---------------------------------------------------------------------------------
+:function-name:`.setData()` :function-signature:`setData({name: val, ...}, [callback])`
+---------------------------------------------------------------------------------------
 
   .. raw:: html
 
@@ -151,80 +198,43 @@ Appbase Reference
 
   .. container:: definition
 
-    Set data property to this Appbase location.
+    Set one or more data properties to this Appbase location.
 
   .. container:: everything-else
 
     **Usage**
-      ``abref.setData(name, val, [callback])``
+      ``abref.setData({name: val, ...}, [callback])``
 
-      - **name** ``String`` Property name
-      - **value** ``String``/``Number`` value
-      - **callback** ``Function`` will be passed with these as arguments:
-          - **error** `String`
-          - **abref** `Appbase Reference` - points to the same path on which the method is called
-          - **snapObj** `Vertex Snapshot` - Snapshot of the new data stored in the vertex.
+      - {name: val, ...} `Javascript object`
+          - **name** `String` --- identifier of the data property
+          - **val** `Boolean` / `Number` / `String` --- value of the data property
+      - **callback** *(optional)* ``Function`` --- will be passed with these as arguments:
+          - **error** `String` / `null` -- *String* containing the error message, *null* if :function-name:`setData()` is successfully run.
+          - **abref** `Appbase Reference` -- points to the same path on which the method is called.
 
-    **Returns**
-      `Appbase Reference` of the vertex at current location.
+    **Example**
 
-  .. raw:: html 
+    .. sourcecode:: js
+
+      /* we will use the 'abref' reference to the vertex at 
+      'Materials/Ice' as used in the example above, and set data on it */
+      var abref = abref.setData({"color":"A5F2F3", "density": 2.5}, function(error, abref) {
+        if (error === null) { // confirming no errors
+          console.log(abref)  // should have the properties "color" and "density" set
+          // can be used for other things now
+        }
+      });
+
+  .. raw:: html
 
     </div>
 
 |
 
-.. index:: commitData()
-
-:function-name:`.commitData()` :function-signature:`commitData(name, apply, [callback])`
--------------------------------------------------------------------------------------------
-
-  .. raw:: html
-
-    <div id="appbase-commit-property" class="foobar">
-
-  .. container:: definition
-
-    Set data property to this Appbase location consistently.
-
-  .. container:: everything-else
-
-    **Usage**
-      ``abref.commitData(name, apply, [callback])``
-
-      - **name** ``String`` Property name
-      - **apply** ``Function`` The function should return a String or a Number. The old value is passed in as an argument to the function.
-      - **callback** ``Function`` will be passed these arguments:
-          - **error** `String`
-          - **abref** `Appbase Reference` of the vertex at the current location
-          - **snapObj** `Vertex Snapshot` Snapshot of the new data stored in the vertex
-          - **isCommitted** `Boolean` ``true`` if the final final value has been committed
-  
-    **Returns**
-      `Appbase Reference` of the vertex at current location.
-
-    **Example**
-
-    .. sourcecode:: js 
-
-      var toolRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy_dufresne/rock_hammer');
-
-      toolRef.commitData('size',function(prevSize) {
-        return prevSize + 1;
-      });
-
-      /* The size of Dufresne's rock hammer can be increased
-       * consistently (no changes will be lost). If 3 people
-       * the size by 1 each simultaneously, the size will
-       * increase by 3.
-       */
-
-|
-
 .. index:: removeData()
 
-:function-name:`.removeData()` :function-signature:`removeData(name, [callback])`
-------------------------------------------------------------------------------------------
+:function-name:`.removeData()` :function-signature:`removeData([name1, ...], [callback])`
+-----------------------------------------------------------------------------------------
 
   .. raw:: html
 
@@ -237,16 +247,24 @@ Appbase Reference
   .. container:: everything-else
 
     **Usage**
-      ``abref.removeData(name, [callback])``
+      ``abref.removeData(property_names, [callback])``
 
-      - **name** ``String`` Property name
-      - **callback** ``Function`` will be passed with these arguments:
-          - **error** `String`
-          - **abref** `Appbase Reference` of the vertex a the current location.
-          - **snapObj** `Vertex Snapshot` of the new data stored in the vertex.
+      - [name1, ...] ``Javascript Array`` --- One or more properties to be deleted
+          - **name1** ``String`` -- The property identifier
+      - **callback** *(optional)* ``Function`` will be passed with these arguments:
+          - **error** `String` / `null` -- *String* containing the error message, *null* if :function-name:`removeData()` is successfully run
+          - **abref** `Appbase Reference` -- of the vertex a the current location.
 
-    **Returns**
-      `Appbase Reference` of the vertex at current location.
+    **Example**
+
+    .. sourcecode:: js
+
+      /* remove the "density" property from our "Ice" vertex */
+      var abref = abref.removeData(["density"], function(error, abref) {
+        if (error === null) { // confirming no errors
+          console.log(abref)  // should no longer contain the "density" property
+        }
+      });
 
   .. raw:: html
 
@@ -256,7 +274,7 @@ Appbase Reference
 
 .. index:: setEdge()
 
-:function-name:`.setEdge()` :function-signature:`setEdge(dest_ref, [edgename], [order], [callback])`
+:function-name:`.setEdge()` :function-signature:`setEdge(dest_ref, edgename, [priority], [callback])`
 -----------------------------------------------------------------------------------------------------
 
   .. raw:: html
@@ -265,48 +283,37 @@ Appbase Reference
 
   .. container:: definition
 
-    Set an edge to a specific destination vertex. It can optionally have an order.
+    Set an edge to a specific destination vertex. It can optionally have a priority.
 
   .. container:: everything-else
 
     **Usage**
-      ``abref.setEdge(dest_ref, [edgename], [order], [callback])``
+      ``abref.setEdge(dest_ref, edgename, [priority], [callback])``
 
-      - **edgename** ``String``
-      - **dest_ref** ``Appbase Reference`` of the destination vertex
-      - **callback** ``Function`` will be passed with these arguments:
-          - **error** `String`
+      - **dest_ref** ``Appbase Reference`` of the out-vertex
+      - **edgename** ``String`` --- Identifier for the edge
+      - **priority** *(optional)* ``Number`` --- Set a priority for the current edge
+      - **callback** *(optional)* ``Function`` will be passed with these arguments:
+          - **error** `String` / `null` -- *String* containing the error message, *null* if :function-name:`setEdge()` is successfully run
           - **abref** `Appbase Reference` of the vertex at current location.
-
-    **Returns**
-      `Appbase Reference` of the vertex at current location.
-
-    :text-note:`Consequeunces for event firing`
-
-    If the current vertex already has an edge with the provided ``edgename`` pointing to a different vertex, **setEdge** will replace the edge's out vertex to ``dest_ref``.
-    The edge is considered to be *removed* and *added* again, therefore firing an **edge_removed** event followed by an **edge_added** event.
-
 
     **Example**
 
     .. sourcecode:: js
 
-      var prisonerRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy_dufresne');
-      var toolRef = Appbase.new('tool'); // new vertex of the namespace 'tool'
+      abref.setEdge(Appbase.create('Materials/Iron'), 'accessories', function(err, abref) {
+        if (typeof err !== String)
+          console.log(abref)
+      });
 
-      toolRef.setData('size',12);
-      prisonerRef.setEdge('rock_hammer',toolRef);
-
-      /* Now Dufresne's rock hammer can be accessed directly with 
-       * the path: 'https://shawshank.api.appbase.io/prisoner/andy_dufresne/rock_hammer'
-       */
+      /* ``abref`` now contains an edge pointing to 'Materials/Iron' */
 
 |
 
 .. index:: removeEdge()
 
-:function-name:`.removeEdge()` :function-signature:`removeEdge(edgename, [callback])`
--------------------------------------------------------------------------------------
+:function-name:`.removeEdge()` :function-signature:`removeEdge([name1, ...], [callback])`
+-----------------------------------------------------------------------------------------
 
   .. raw:: html
 
@@ -319,56 +326,24 @@ Appbase Reference
   .. container:: everything-else
 
     **Usage**
-      ``abref.remove_edge(name, [callback])``
+      ``abref.removeEdge(name, [callback])``
 
-      - **name** `String` - named edges
+      - [name1, ...] ``Javascript Array`` of the properties to be deleted
+          - **name1** ``String`` -- Edge name
       - **callback** `Function` - will be passed these as arguments:
-          - **error** `Boolean/String`
+          - **error** `String` / `null` -- *String* containing the error message, *null* if :function-name:`removeEdge()` is successfully run
           - **abref** `Appbase Reference` - points to the same path on which the method is called
-
-    **Returns**
-      `Appbase Reference` of the vertex at current location.
-
-|
-
-.. index:: delete()
-
-:function-name-danger:`.delete()` :function-signature:`delete([callback])`
---------------------------------------------------------------------------
-
-  .. raw:: html
-
-    <div id="appbase-delete" class="foobar">
-
-  .. container:: definition
-
-    Delete the vertex, it's associated data and the connecting edges from the current location.
-
-  .. container:: returns
-
-    **Returns**
-      ``Boolean`` *true* if successful
-
-  .. container:: everything-else
-
-    **Usage**
-      ``abref.delete([callback])``
-
-      - **callback** ``Function`` will be passed with these arguments:
-          - **error** `Boolean/String`
-
-    The Appbase Reference now turns invalid and the listeners will not fire. Consequently, any data modification operations will fail.
 
 |
 
 .. index:: url()
 
-:function-name:`.url()` :function-signature:`url()`
+:function-name:`.URL()` :function-signature:`URL()`
 -----------------------------------------------------
 
   .. raw:: html
 
-    <div id="appbase-path" class="foobar">
+    <div id="appbase-url" class="foobar">
 
   .. container:: definition
 
@@ -382,7 +357,50 @@ Appbase Reference
   .. container:: everything-else
 
     **Usage**
+      ``abref.URL()``
+
+    This is useful for hyperlinking elements.
+
+    **Example**
+
+    .. sourcecode:: js
+
+      var url = abref.URL() // returns "*appname*.api1.appbase.io/Materials/Iron"
+
+  .. raw:: html
+
+    </div>
+
+|
+
+.. index:: path()
+
+:function-name:`.path()` :function-signature:`path()`
+-----------------------------------------------------
+
+  .. raw:: html
+
+    <div id="appbase-path" class="foobar">
+
+  .. container:: definition
+
+    Appbase path of the current reference.
+
+  .. container:: returns
+
+    **Returns**
+      ``String`` Appbase path
+
+  .. container:: everything-else
+
+    **Usage**
       ``abref.path()``
+
+    **Example**
+
+    .. sourcecode:: js
+
+        var path = abref.path() // returns "Materials/Iron"
 
   .. raw:: html
 
@@ -393,7 +411,7 @@ Appbase Reference
 .. index:: outVertex()
 
 :function-name:`.outVertex()` :function-signature:`outVertex(name)`
-------------------------------------------------------------------
+-------------------------------------------------------------------
 
   .. raw:: html
 
@@ -413,18 +431,16 @@ Appbase Reference
     **Usage**
       ``abref.outVertex(name)``
 
-    
+      - **name** `String` --- Edgename of the out vertex you are looking for. 
 
     **Example**
 
     .. sourcecode:: js
 
-      var prisonerRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy_dufresne');
-      var toolRef = prisonerRef.outVertex('rock_hammer');
+      var abref = Appbase.ref('Materials/Ice');
+      var outref = abref.outVertex('accesories');
 
-      /* `toolRef` points to the the path:
-       * 'https://shawshank.api.appbase.io/prisoner/andy_dufresne/rock_hammer'
-       */
+      /* `outref` points to the vertex at path: 'Materials/Ice/accesories' */
 
   .. raw:: html
 
@@ -435,7 +451,7 @@ Appbase Reference
 .. index:: inVertex()
 
 :function-name:`.inVertex()` :function-signature:`inVertex()`
-------------------------------------------------------------
+-------------------------------------------------------------
 
   .. raw:: html
 
@@ -461,14 +477,12 @@ Appbase Reference
 
     .. sourcecode:: js
 
-      var toolRef = Appbase.ref('https://shawshank.api.appbase.io/prisoner/andy_dufresne/rock_hammer');
-      var prisonerRef = toolRef.in_vertex();
+      var iceref = Appbase.ref('Materials/Ice/accessories');
+      var abref = iceref.inVertex();
 
-      /* `prisonerRef` points to the the path:
-       * 'https://shawshank.api.appbase.io/prisoner/andy_dufresne'
-       */
+      /* `abref` points to the the path 'Materials/Ice' */
        
-      var newRef = prisonerRef.in_vertex(); //Throws an error
+      var newref = abref.inVertex();   // Throws an error
 
   .. raw:: html
 
@@ -483,8 +497,8 @@ Data Listeners
 
 .. index:: on('properties')
 
-:function-name:`on('properties')` :function-signature:`on('properties', [listener_name], callback)`
-----------------------------------------------------------------------------------------------------
+:function-name:`on('properties')` :function-signature:`on('properties', callback)`
+----------------------------------------------------------------------------------
 
   .. raw:: html
 
@@ -502,15 +516,12 @@ Data Listeners
   .. container:: everything-else
 
     **Usage**
-      ``abref.on('properties', [listener_name], callback)``
+      ``abref.on('properties', callback)``
 
-      - **listener_name** *(Optional)* `String` - Identifier for the listener.
-      - **callback** `Function` - will be passed these as arguments:
-          - **error** `Boolean/String`
-          - **abref** `Appbase Reference` - points to the path on which the event is fired
-          - **snapObj** `Vertex Snapshot` - Snapshot of the data stored in the vertex. Take a look at the documentation of `Vertex Snapshot`
-
-    `listener_name` is a unique string, which can be used later on to turn this listener off using `offWithName(listener_name)`. This is a way to keep track of listeners. If a `listener_name` is given again with a different callback function, the old callback function is replaced, and will no longer be called when the event is fired, instead the new function will be called. If no `listener_name` is given, a unique string will be generated as the listener's name and returned.
+      - **callback** ``Function`` --- will be passed these as arguments:
+          - **error** `String` / `null` -- *String* containing the error message, *null* if :function-name:`on('properties')` listening is successful
+          - **abref** `Appbase Reference` -- points to the path on which the event is fired
+          - **snapObj** `Vertex Snapshot` -- Snapshot of the data stored in the vertex. Take a look at the documentation of `Vertex Snapshot`
 
 
     **Example**
@@ -541,8 +552,8 @@ Data Listeners
 
 .. index:: on('edge_added')
 
-:function-name:`on('edge_added')` :function-signature:`on('edge_added', edgetype, [listener_name], [options], callback)`
--------------------------------------------------------------------------------------------------------------------------------
+:function-name:`on('edge_added')` :function-signature:`on('edge_added', callback)`
+----------------------------------------------------------------------------------
 
   .. raw:: html 
 
@@ -560,20 +571,12 @@ Data Listeners
   .. container:: everything-else
 
     **Usage**
-      ``abref.on('edge_added', edgetype, [listener_name], [options], callback)``
+      ``abref.on('edge_added', callback)``
 
-      - **edgetype** `String` - 'ordered' or 'named'
-      - **listener_name** *(Optional)* `String` - Name given to the listener. For details, take a look at the documentation of `on('properties')`
-      - **options** `Object`
-          - **limit** How many existing edges to fetch - only for ordered edges
-          - **startAt** `Number` - Priority to start with - only for ordered edges
-          - **endAt** `Number` - Priority to end with - only for ordered edges
-          - **skip**  `Number` - Skip initial edges - only for ordered edges
-          - **noData** `Boolean` - Whether to include the data stored at the vertex where the edge points 
       - **callback** `Function` - will be passed these as arguments:
-          - **error** `Boolean/String`
+          - **error** `String` / `null` --
           - **abref** `Appbase Reference` - pointing to path of the edge
-          - **[snapObj]** `Vertex Snapshot` - Snapshot of the data stored in the vertex, where the edge points. Take a look at the documentation of `Vertex Snapshot`
+          - **[snapObj]** `Edge Snapshot` - Snapshot of the data stored in the vertex, where the edge points. Take a look at the documentation of `Vertex Snapshot`
 
     `snapObj` will not be passed if `{noData: true}` is passed as the options to the listener.
 
@@ -612,8 +615,8 @@ Data Listeners
 
 .. index:: on('edge_removed')
 
-:function-name:`on('edge_removed')` :function-signature:`on('edge_removed', edgetype, [listener_name], callback)`
---------------------------------------------------------------------------------------------------------------------
+:function-name:`on('edge_removed')` :function-signature:`on('edge_removed', callback)`
+--------------------------------------------------------------------------------------
 
   .. raw:: html
 
@@ -631,14 +634,12 @@ Data Listeners
   .. container:: everything-else
 
     **Usage**
-      ``abref.on('edge_removed', edgetype, [listener_name], callback)``
+      ``abref.on('edge_removed', callback)``
 
-      - **edgetype** `String` - 'ordered' or 'named'
-      - **listener_name** *(Optional)* `String` - Name given to the listener. For details, take a look at the documentation of `on('properties')`.
       - **callback** `Function` - will be passed these as arguments:
           - **error** `Boolean/String`
           - **abref** `Appbase Reference` - pointing to path of the edge
-          - **snapObj** `Vertex Snapshot` - Snapshot of the data stored in the vertex, where the edge used to point. Take a look at the documentation of `Vertex Snapshot`
+          - **snapObj** `Edge Snapshot` - Snapshot of the data stored in the vertex, where the edge used to point. Take a look at the documentation of `Vertex Snapshot`
 
   .. raw:: html
 
@@ -648,8 +649,8 @@ Data Listeners
 
 .. index:: on('edge_changed')
 
-:function-name:`on('edge_changed')` :function-signature:`on('edge_changed', [listener_name], callback)`
--------------------------------------------------------------------------------------------------------
+:function-name:`on('edge_changed')` :function-signature:`on('edge_changed', callback)`
+--------------------------------------------------------------------------------------
 
   .. raw:: html
 
@@ -667,14 +668,12 @@ Data Listeners
   .. container:: everything-else
 
     **Usage**
-      ``abref.on('edge_changed', edgetype, [listener_name], callback)``
+      ``abref.on('edge_changed', callback)``
 
-    - **edgetype** `String` - 'ordered' or 'named'
-    - **listener_name** *(Optional)* `String` - Name given to the listener. For details, take a look at the documentation of `on('properties')`.
     - **callback** `Function` - will be passed these as arguments:
         - **error** `Boolean/String`
         - **abref** `Appbase Reference` - pointing to path of the edge
-        - **snapObj** `Vertex Snapshot` - Snapshot of the data stored in the vertex, where the edge points. Take a look at the documentation of `Vertex Snapshot`
+        - **snapObj** `Edge Snapshot` - Snapshot of the data stored in the vertex, where the edge points. Take a look at the documentation of `Vertex Snapshot`
 
     For this event to fire, in the background the vertexes pointed by all the edges are listened for **properties** event, and this would be a costly operation in terms of bandwidth if there are a huge number of edges.
 
@@ -711,49 +710,10 @@ Data Listeners
 
 |
 
-.. index:: on('edge_moved')
-
-:function-name:`on('edge_moved')` :function-signature:`on('edge_moved', [listener_name], callback)`
-----------------------------------------------------------------------------------------------------
-
-  .. raw:: html
-
-    <div id="appbase-edge-moved" class="foobar">
-
-  .. container:: definition
-
-    TODO: only on ordered edges
-    This event is fired, when the order of an edge is changed. 
-
-    When the order of an edge is manually changed by calling `abref.edges.add()` on an existing edge, also the other edges are moved, either they are shifted upward or downward by '1' in the order. This event is fired for all the edges, moved manually or automatically.
-
-  .. container:: returns
-
-    **Returns**
-      `String` - the listener's name and can be used to turn the listener off.
-
-  .. container:: everything-else
-
-    **Usage**
-      ``abref.on('edge_moved', [listener_name], callback)``
-
-      - **listener_name** *(Optional)* `String` - Name given to the listener. For details, take a look at the documentation of `on('properties')`.
-      - **listenDepth** `Number` - The depth of edges up to which listen for data changes. Default value is `0`, meaning no listening on the properties.
-      - **callback** `Function` - will be passed these as arguments:
-          - **error** `Boolean/String`
-          - **abref** `Appbase Reference` - pointing to path of the edge
-          - **snapObj** `Vertex Snapshot` - Snapshot of the data stored in the vertex, where the edge points. Take a look at the documentation of `Vertex Snapshot`
- 
-  .. raw:: html
-
-    </div>
-
-|
-
 .. index:: off()
 
-:function-name:`off()` :function-signature:`off()`
---------------------------------------------------
+:function-name:`off()` :function-signature:`off([event])`
+---------------------------------------------------------
 
   .. raw:: html
 
@@ -775,27 +735,42 @@ Data Listeners
 
       - **event** *(optional)* `String` - All the listeners on this event, will be turned off. If no event is given, all the listeners on all the events will be turned off.
 
+  .. raw:: html
+
+    </div>
+
 |
 
-.. index:: off()
+Data Snapshots
+==============
 
-:function-name:`off()` :function-signature:`off(listener_name)`
-----------------------------------------------------------------
+-------------------
+
+Data snapshots are immutable copies of the data stored at `Appbase References`_. There are two kinds of snapshots: `Property Snapshot`_ and `Edge Snapshot`_, fired when listening to on('properties') or one of the edge listeners.
+
+
+|
+
+.. index:: propertySnapshot()
+
+:function-name:`Property Snapshot`
+----------------------------------
 
   .. raw:: html
 
-    <div id="appbase-off" class="foobar">
+    <div id="appbase-property-snapshot" class="foobar">
 
   .. container:: definition
 
-    Turn off a listener by its name.
-
-  .. container:: everything-else
-
-    **Usage**
-      ``off(listener_name)``
-
-    - **listener_name** `String` - The unique name given to the listener while calling `on(event)`.
+    *Property Snapshot* is an immutable copy of the property data at a location in *Appbase*. It has the following methods to obtain the changes in the Appbase Reference.
+    
+    +--------------------+---------------------------------------------------------------------+
+    | Method             | Returns                                                             |
+    +====================+=====================================================================+
+    | properties()       | data properties as a Javascript object                              |
+    +--------------------+---------------------------------------------------------------------+
+    | prevProperties()   | data properties before data **change** as a Javascript object       |
+    +--------------------+---------------------------------------------------------------------+
 
   .. raw:: html
 
@@ -803,48 +778,31 @@ Data Listeners
 
 |
 
-Vertex Snapshot
-===============
+.. index:: edgeSnapshot()
 
--------------------
+:function-name:`Edge Snapshot`
+------------------------------
 
-*Vertex Snapshot* is an immutable copy of the data at a location in
-*Appbase*. It is passed to callbacks in all event firing. It can’t be
-modified and will never change. To modify data, use an Appbase
-reference.
+  .. raw:: html
 
-Snapshot Methods
-----------------
+    <div id="appbase-edge-snapshot" class="foobar">
 
-+--------------------+---------------------------------------------------------------------+
-| Method             | Returns                                                             |
-+====================+=====================================================================+
-| properties()       | prop-value pairs in the form of a JavaScript object                 |
-+--------------------+---------------------------------------------------------------------+
-| prevProperties()   | the previous version of prop-value pairs                            |
-+--------------------+---------------------------------------------------------------------+
-| namespace()        | the *namespace* of the vertex                                       |
-+--------------------+---------------------------------------------------------------------+
-| name()             | the edge name with which the vertex is stored in the current path   |
-+--------------------+---------------------------------------------------------------------+
-| index()            | index of this vertex in the current path                            |
-+--------------------+---------------------------------------------------------------------+
-| prevIndex()        | the previous index of this vertex in the current path               |
-+--------------------+---------------------------------------------------------------------+
+  .. container:: definition
 
-The following table shows what exact data would be returned by the
-methods in different kind of events.
+    *Edge Snapshot* is an immutable copy of the edge data at a location in *Appbase*. It has the following methods to obtain the edge related changes in the Appbase Reference.
+    
+    +--------------------+---------------------------------------------------------------+
+    | Method             | Returns                                                       |
+    +====================+===============================================================+
+    | priority()         | current priority of the edge (``null`` if not set)            |
+    +--------------------+---------------------------------------------------------------+
+    | prevPriority()     | previous priority of the edge (``null`` if not set)           |
+    +--------------------+---------------------------------------------------------------+
 
-+--------------------+------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------+------------------------------------------------------------------+------------------------------------------------------------------------+----------------------------------------------------+
-| Method             | value                                                                                                                                    | edge\_added                                        | edge\_removed                                                    | edge\_changed                                                          | edge\_moved                                        |
-+====================+==========================================================================================================================================+====================================================+==================================================================+========================================================================+====================================================+
-| properties()       | properties of the **vertex being listened**                                                                                              | properties of the vertex pointed by **the edge**   | **null**                                                         | **new** properties of the vertex pointed by **the edge**               | properties of the vertex pointed by **the edge**   |
-+--------------------+------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------+------------------------------------------------------------------+------------------------------------------------------------------------+----------------------------------------------------+
-| prevProperties()   | **null** when the event is fired for **the first time** , *and*, **previous version** of properties when they are **changed later on**   | **null**                                           | properties of the vertex pointed by **the edge being deleted**   | **previous version** of properties of the vertex pointed by the edge   | same as **properties()**                           |
-+--------------------+------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------+------------------------------------------------------------------+------------------------------------------------------------------------+----------------------------------------------------+
-| index()            | **index** of the edge pointing to **this vertex** in the current path                                                                    | **index** of **the edge**                          | **null**                                                         | **index** of **the edge**                                              | **current** index of **the edge**                  |
-+--------------------+------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------+------------------------------------------------------------------+------------------------------------------------------------------------+----------------------------------------------------+
-| prevIndex()        | same as **index()**                                                                                                                      | **null**                                           | **index** of **the edge being deleted**                          | same as **index()**                                                    | **previous** index of **the edge**                 |
-+--------------------+------------------------------------------------------------------------------------------------------------------------------------------+----------------------------------------------------+------------------------------------------------------------------+------------------------------------------------------------------------+----------------------------------------------------+
+  .. raw:: html
+
+    </div>
+
+|
 
 |
