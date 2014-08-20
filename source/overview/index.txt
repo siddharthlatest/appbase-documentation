@@ -1,6 +1,16 @@
 Appbase Overview
 ================
 
+This document is under construction. The following info is for a deprecated API!
+--------------------------------------------------------------------------------
+
+|
+
+Deprecated doc begin
+--------------------
+
+----
+
 Objects and Properties
 ----------------------
 
